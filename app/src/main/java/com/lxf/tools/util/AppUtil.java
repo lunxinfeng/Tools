@@ -1,13 +1,14 @@
 package com.lxf.tools.util;
 
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 
 public class AppUtil {
-    public static void launchAPP(Context context,String packageName) {
+    public static void launchAPP(Context context, String packageName) {
         try {
             PackageManager packageManager = context.getApplicationContext().getPackageManager();
             Intent intent = packageManager.getLaunchIntentForPackage(packageName);
@@ -17,9 +18,15 @@ public class AppUtil {
         }
     }
 
-    public static void startBrowser(Context context,String url){
+    public static void startBrowser(Context context, String url) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(url));
         context.startActivity(intent);
+    }
+
+    public static void killBackgroundApp(Context context, String packageName) {
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        if (am != null)
+            am.killBackgroundProcesses(packageName);
     }
 }
