@@ -1,13 +1,12 @@
 package com.lxf.tools
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import com.lxf.tools.util.AppUtil
 import kotlinx.android.synthetic.main.activity_main.*
+import com.lxf.tools.net_hint.BaseActivity
 
-class MainActivity : AppCompatActivity() {
 
-    private val appId = "2018080760925380"
+class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

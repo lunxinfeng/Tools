@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.provider.Settings;
 
 public class AppUtil {
     public static void launchAPP(Context context, String packageName) {
@@ -28,5 +29,10 @@ public class AppUtil {
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         if (am != null)
             am.killBackgroundProcesses(packageName);
+    }
+
+    public static void toSettingActivity(Context context){
+        Intent intent =  new Intent(Settings.ACTION_AIRPLANE_MODE_SETTINGS);
+        context.startActivity(intent);
     }
 }
