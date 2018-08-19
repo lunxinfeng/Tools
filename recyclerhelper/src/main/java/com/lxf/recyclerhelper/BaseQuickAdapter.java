@@ -7,13 +7,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
 
 import com.lxf.recyclerhelper.animation.BaseAnimation;
+import com.lxf.recyclerhelper.animation.ScaleInAnimation;
 import com.lxf.recyclerhelper.listener.OnItemChildClickListener;
 import com.lxf.recyclerhelper.listener.OnItemChildLongClickListener;
 import com.lxf.recyclerhelper.listener.OnItemClickListener;
 import com.lxf.recyclerhelper.listener.OnItemLongClickListener;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
@@ -27,14 +29,19 @@ public abstract class BaseQuickAdapter<T,VH extends BaseViewHolder> extends Recy
     private List<T> data;
     private int layoutId;
 
-    private boolean anim;
+    private boolean animShow;
+    private boolean animFirstOnly;
+    private BaseAnimation animation;
+    private long animDuration = 300;
+    private Interpolator animInterpolar = new LinearInterpolator();
+    private int lastPosition = -1;
 
     private OnItemClickListener onItemClickListener;
     private OnItemChildClickListener onItemChildClickListener;
     private OnItemLongClickListener onItemLongClickListener;
     private OnItemChildLongClickListener onItemChildLongClickListener;
 
-    public BaseQuickAdapter(@Nullable List<T> data, @LayoutRes int layoutId) {
+    public BaseQuickAdapter(@LayoutRes int layoutId,@Nullable List<T> data) {
         this.data = data == null ? new ArrayList<T>() : data;
         this.layoutId = layoutId;
     }
@@ -70,6 +77,19 @@ public abstract class BaseQuickAdapter<T,VH extends BaseViewHolder> extends Recy
 
     protected abstract void convert(VH helper, T item);
 
+    public void showWithAnimation(boolean anim){
+        animShow = anim;
+    }
+
+    public void showWithAnimation(boolean anim,BaseAnimation animation){
+        animShow = anim;
+        this.animation = animation;
+    }
+
+    public void showAnimOnlyFirst(boolean first){
+        animFirstOnly = first;
+    }
+
 
     private void bindViewClickListener(final BaseViewHolder baseViewHolder) {
         if (baseViewHolder == null) {
@@ -92,23 +112,20 @@ public abstract class BaseQuickAdapter<T,VH extends BaseViewHolder> extends Recy
     /**
      * add animation when you want to show time
      *
-     * @param holder
      */
     private void addAnimation(RecyclerView.ViewHolder holder) {
-//        if (mOpenAnimationEnable) {
-//            if (!mFirstOnlyEnable || holder.getLayoutPosition() > mLastPosition) {
-//                BaseAnimation animation = null;
-//                if (mCustomAnimation != null) {
-//                    animation = mCustomAnimation;
-//                } else {
-//                    animation = mSelectAnimation;
-//                }
-//                for (Animator anim : animation.getAnimators(holder.itemView)) {
-//                    startAnim(anim, holder.getLayoutPosition());
-//                }
-//                mLastPosition = holder.getLayoutPosition();
-//            }
-//        }
+        if (animShow) {
+            if (!animFirstOnly || holder.getLayoutPosition() > lastPosition) {
+                if (animation == null) {
+                    animation = new ScaleInAnimation();
+                }
+                for (Animator anim : animation.getAnimators(holder.itemView)) {
+                    anim.setDuration(animDuration).start();
+                    anim.setInterpolator(animInterpolar);
+                }
+                lastPosition = holder.getLayoutPosition();
+            }
+        }
     }
 
     public OnItemChildClickListener getOnItemChildClickListener() {
@@ -117,6 +134,14 @@ public abstract class BaseQuickAdapter<T,VH extends BaseViewHolder> extends Recy
 
     public OnItemChildLongClickListener getOnItemChildLongClickListener() {
         return onItemChildLongClickListener;
+    }
+
+    public void setAnimDuration(long animDuration) {
+        this.animDuration = animDuration;
+    }
+
+    public void setAnimInterpolar(Interpolator animInterpolar) {
+        this.animInterpolar = animInterpolar;
     }
 
     /**
