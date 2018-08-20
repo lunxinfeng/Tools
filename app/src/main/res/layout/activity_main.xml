@@ -7,12 +7,12 @@
     tools:context="com.lxf.tools.MainActivity">
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btnData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="Button"
+        android:text="数据"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -27,5 +27,23 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
+        app:layout_constraintTop_toBottomOf="@+id/btnData" />
+
+    <Button
+        android:id="@+id/btnEmpty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:text="空布局"
+        app:layout_constraintStart_toEndOf="@+id/btnData"
+        app:layout_constraintTop_toTopOf="@+id/btnData" />
+
+    <Button
+        android:id="@+id/btnError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:text="失败布局"
+        app:layout_constraintStart_toEndOf="@+id/btnEmpty"
+        app:layout_constraintTop_toTopOf="@+id/btnEmpty" />
 </android.support.constraint.ConstraintLayout>

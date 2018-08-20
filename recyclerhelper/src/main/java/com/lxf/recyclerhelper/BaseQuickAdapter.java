@@ -27,25 +27,61 @@ import java.util.List;
 
 
 public abstract class BaseQuickAdapter<T, VH extends BaseViewHolder> extends RecyclerView.Adapter<VH> {
+    /**
+     * 数据
+     */
     private List<T> data;
+    /**
+     * item布局id
+     */
     private int layoutId;
 
     //-------------------------anim---------------------------
+    /**
+     * item显示的时候是否开启动画
+     */
     private boolean animShow;
+    /**
+     * 是否只有在第一次item显示的时候开启动画
+     */
     private boolean animFirstOnly;
+    /**
+     * 具体动画
+     */
     private BaseAnimation animation;
+    /**
+     * 动画时长
+     */
     private long animDuration = 300;
+    /**
+     * 动画插值器
+     */
     private Interpolator animInterpolator = new LinearInterpolator();
+    /**
+     * 列表展示的最后一条item位置
+     */
     private int lastPosition = -1;
 
     //-------------------------emptyView----------------------
+    /**
+     * 数据为空时展示的布局
+     */
     private View emptyView;
+    //-------------------------errorView----------------------
+    /**
+     * 加载失败时展示的布局
+     */
+    private View errorView;
+    /**
+     * 是否展示失败布局
+     */
+    private boolean loadError;
 
 
-    public static final int HEADER_VIEW = 0x00000111;
-    public static final int LOADING_VIEW = 0x00000222;
-    public static final int FOOTER_VIEW = 0x00000333;
-    public static final int EMPTY_VIEW = 0x00000555;
+    private static final int HEADER_VIEW = 0x00000111;
+    private static final int FOOTER_VIEW = 0x00000222;
+    private static final int EMPTY_VIEW = 0x00000333;
+    private static final int ERROR_VIEW = 0x00000444;
 
     private OnItemClickListener onItemClickListener;
     private OnItemChildClickListener onItemChildClickListener;
@@ -69,6 +105,9 @@ public abstract class BaseQuickAdapter<T, VH extends BaseViewHolder> extends Rec
             case EMPTY_VIEW:
                 holder = createBaseViewHolder(emptyView);
                 break;
+            case ERROR_VIEW:
+                holder = createBaseViewHolder(errorView);
+                break;
             default:
                 holder = createBaseViewHolder(view);
                 bindViewClickListener(holder);
@@ -83,13 +122,13 @@ public abstract class BaseQuickAdapter<T, VH extends BaseViewHolder> extends Rec
     public void onBindViewHolder(VH holder, int position) {
         int viewType = holder.getItemViewType();
         switch (viewType) {
-            case LOADING_VIEW:
-                break;
             case HEADER_VIEW:
                 break;
             case EMPTY_VIEW:
                 break;
             case FOOTER_VIEW:
+                break;
+            case ERROR_VIEW:
                 break;
             default:
                 convert(holder, data.get(position));
@@ -99,13 +138,15 @@ public abstract class BaseQuickAdapter<T, VH extends BaseViewHolder> extends Rec
 
     @Override
     public int getItemCount() {
-        if (hasEmptyView())
+        if (loadError || hasEmptyView())
             return 1;
         return data.size();
     }
 
     @Override
     public int getItemViewType(int position) {
+        if (loadError)
+            return ERROR_VIEW;
         if (hasEmptyView()) {
             return EMPTY_VIEW;
         }
@@ -115,8 +156,11 @@ public abstract class BaseQuickAdapter<T, VH extends BaseViewHolder> extends Rec
     @Override
     public void onViewAttachedToWindow(VH holder) {
         super.onViewAttachedToWindow(holder);
-        if (holder.getItemViewType()!=EMPTY_VIEW)
+        int viewType = holder.getItemViewType();
+        if (viewType != EMPTY_VIEW && viewType != ERROR_VIEW)
             addAnimation(holder);
+
+        loadError = false;
     }
 
     protected abstract void convert(VH helper, T item);
@@ -130,6 +174,11 @@ public abstract class BaseQuickAdapter<T, VH extends BaseViewHolder> extends Rec
     public void addData(@Nullable List<T> data) {
         if (data == null) return;
         this.data.addAll(data);
+        notifyDataSetChanged();
+    }
+
+    public void loadDataFail() {
+        loadError = true;
         notifyDataSetChanged();
     }
 
@@ -147,7 +196,7 @@ public abstract class BaseQuickAdapter<T, VH extends BaseViewHolder> extends Rec
     }
 
     /**
-     * if show empty view will be return true or not will be return false
+     * 是否显示空布局
      */
     public boolean hasEmptyView() {
         return emptyView != null && data.size() == 0;
@@ -155,6 +204,10 @@ public abstract class BaseQuickAdapter<T, VH extends BaseViewHolder> extends Rec
 
     public void setEmptyView(@LayoutRes int layoutId, ViewGroup viewGroup) {
         emptyView = LayoutInflater.from(viewGroup.getContext()).inflate(layoutId, viewGroup, false);
+    }
+
+    public void setErrorView(@LayoutRes int layoutId, ViewGroup viewGroup) {
+        errorView = LayoutInflater.from(viewGroup.getContext()).inflate(layoutId, viewGroup, false);
     }
 
     private void bindViewClickListener(final BaseViewHolder baseViewHolder) {
@@ -176,7 +229,7 @@ public abstract class BaseQuickAdapter<T, VH extends BaseViewHolder> extends Rec
     }
 
     /**
-     * add animation when you want to show time
+     * 为item展现的时候添加动画
      */
     private void addAnimation(RecyclerView.ViewHolder holder) {
         if (animShow) {
@@ -211,6 +264,30 @@ public abstract class BaseQuickAdapter<T, VH extends BaseViewHolder> extends Rec
 
     public void setAnimInterpolator(Interpolator animInterpolator) {
         this.animInterpolator = animInterpolator;
+    }
+
+    public OnItemClickListener getOnItemClickListener() {
+        return onItemClickListener;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
+    public void setOnItemChildClickListener(OnItemChildClickListener onItemChildClickListener) {
+        this.onItemChildClickListener = onItemChildClickListener;
+    }
+
+    public OnItemLongClickListener getOnItemLongClickListener() {
+        return onItemLongClickListener;
+    }
+
+    public void setOnItemLongClickListener(OnItemLongClickListener onItemLongClickListener) {
+        this.onItemLongClickListener = onItemLongClickListener;
+    }
+
+    public void setOnItemChildLongClickListener(OnItemChildLongClickListener onItemChildLongClickListener) {
+        this.onItemChildLongClickListener = onItemChildLongClickListener;
     }
 
     /**
