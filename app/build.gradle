@@ -32,5 +32,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:2.2.2'
     implementation 'com.google.code.gson:gson:2.2.4'
     implementation 'com.android.support:design:26.1.0'
-    implementation "io.reactivex.rxjava2:rxjava:2.2.0"
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.0'
+    implementation project(':recyclerhelper')
 }

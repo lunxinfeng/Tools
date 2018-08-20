@@ -2,13 +2,17 @@ package com.lxf.tools.util;
 
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
+import android.service.notification.NotificationListenerService;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationManagerCompat;
+import android.util.Log;
 
 import java.util.Set;
 
@@ -45,5 +49,13 @@ public class PermissionUtil {
             intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
         }
         activity.startActivityForResult(intent,requestCode);
+    }
+
+    public static void toggleNotificationListenerService(Context context, Class<? extends NotificationListenerService> cls) {
+        PackageManager pm = context.getPackageManager();
+        pm.setComponentEnabledSetting(new ComponentName(context, cls),
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+        pm.setComponentEnabledSetting(new ComponentName(context, cls),
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
     }
 }

@@ -16,6 +16,7 @@ import com.lxf.recyclerhelper.listener.OnItemChildClickListener;
 import com.lxf.recyclerhelper.listener.OnItemChildLongClickListener;
 import com.lxf.recyclerhelper.listener.OnItemClickListener;
 import com.lxf.recyclerhelper.listener.OnItemLongClickListener;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
@@ -25,23 +26,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public abstract class BaseQuickAdapter<T,VH extends BaseViewHolder> extends RecyclerView.Adapter<VH> {
+public abstract class BaseQuickAdapter<T, VH extends BaseViewHolder> extends RecyclerView.Adapter<VH> {
     private List<T> data;
     private int layoutId;
 
+    //-------------------------anim---------------------------
     private boolean animShow;
     private boolean animFirstOnly;
     private BaseAnimation animation;
     private long animDuration = 300;
-    private Interpolator animInterpolar = new LinearInterpolator();
+    private Interpolator animInterpolator = new LinearInterpolator();
     private int lastPosition = -1;
+
+    //-------------------------emptyView----------------------
+    private View emptyView;
+
+
+    public static final int HEADER_VIEW = 0x00000111;
+    public static final int LOADING_VIEW = 0x00000222;
+    public static final int FOOTER_VIEW = 0x00000333;
+    public static final int EMPTY_VIEW = 0x00000555;
 
     private OnItemClickListener onItemClickListener;
     private OnItemChildClickListener onItemChildClickListener;
     private OnItemLongClickListener onItemLongClickListener;
     private OnItemChildLongClickListener onItemChildLongClickListener;
 
-    public BaseQuickAdapter(@LayoutRes int layoutId,@Nullable List<T> data) {
+    public BaseQuickAdapter(@LayoutRes int layoutId, @Nullable List<T> data) {
         this.data = data == null ? new ArrayList<T>() : data;
         this.layoutId = layoutId;
     }
@@ -52,44 +63,99 @@ public abstract class BaseQuickAdapter<T,VH extends BaseViewHolder> extends Recy
 
     @Override
     public VH onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(layoutId,parent,false);
-        VH holder = createBaseViewHolder(view);
-        bindViewClickListener(holder);
+        View view = LayoutInflater.from(parent.getContext()).inflate(layoutId, parent, false);
+        VH holder;
+        switch (viewType) {
+            case EMPTY_VIEW:
+                holder = createBaseViewHolder(emptyView);
+                break;
+            default:
+                holder = createBaseViewHolder(view);
+                bindViewClickListener(holder);
+                break;
+        }
+
         holder.setAdapter(this);
         return holder;
     }
 
     @Override
     public void onBindViewHolder(VH holder, int position) {
-        convert(holder, data.get(position));
+        int viewType = holder.getItemViewType();
+        switch (viewType) {
+            case LOADING_VIEW:
+                break;
+            case HEADER_VIEW:
+                break;
+            case EMPTY_VIEW:
+                break;
+            case FOOTER_VIEW:
+                break;
+            default:
+                convert(holder, data.get(position));
+                break;
+        }
     }
 
     @Override
     public int getItemCount() {
+        if (hasEmptyView())
+            return 1;
         return data.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (hasEmptyView()) {
+            return EMPTY_VIEW;
+        }
+        return super.getItemViewType(position);
     }
 
     @Override
     public void onViewAttachedToWindow(VH holder) {
         super.onViewAttachedToWindow(holder);
-        addAnimation(holder);
+        if (holder.getItemViewType()!=EMPTY_VIEW)
+            addAnimation(holder);
     }
 
     protected abstract void convert(VH helper, T item);
 
-    public void showWithAnimation(boolean anim){
+    public void setNewData(@Nullable List<T> data) {
+        this.data = data == null ? new ArrayList<T>() : data;
+        lastPosition = -1;
+        notifyDataSetChanged();
+    }
+
+    public void addData(@Nullable List<T> data) {
+        if (data == null) return;
+        this.data.addAll(data);
+        notifyDataSetChanged();
+    }
+
+    public void showWithAnimation(boolean anim) {
         animShow = anim;
     }
 
-    public void showWithAnimation(boolean anim,BaseAnimation animation){
+    public void showWithAnimation(boolean anim, BaseAnimation animation) {
         animShow = anim;
         this.animation = animation;
     }
 
-    public void showAnimOnlyFirst(boolean first){
+    public void showAnimOnlyFirst(boolean first) {
         animFirstOnly = first;
     }
 
+    /**
+     * if show empty view will be return true or not will be return false
+     */
+    public boolean hasEmptyView() {
+        return emptyView != null && data.size() == 0;
+    }
+
+    public void setEmptyView(@LayoutRes int layoutId, ViewGroup viewGroup) {
+        emptyView = LayoutInflater.from(viewGroup.getContext()).inflate(layoutId, viewGroup, false);
+    }
 
     private void bindViewClickListener(final BaseViewHolder baseViewHolder) {
         if (baseViewHolder == null) {
@@ -103,7 +169,7 @@ public abstract class BaseQuickAdapter<T,VH extends BaseViewHolder> extends Recy
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onItemClickListener.onItemClick(BaseQuickAdapter.this,v,baseViewHolder.getLayoutPosition());
+                    onItemClickListener.onItemClick(BaseQuickAdapter.this, v, baseViewHolder.getLayoutPosition());
                 }
             });
         }
@@ -111,7 +177,6 @@ public abstract class BaseQuickAdapter<T,VH extends BaseViewHolder> extends Recy
 
     /**
      * add animation when you want to show time
-     *
      */
     private void addAnimation(RecyclerView.ViewHolder holder) {
         if (animShow) {
@@ -121,11 +186,15 @@ public abstract class BaseQuickAdapter<T,VH extends BaseViewHolder> extends Recy
                 }
                 for (Animator anim : animation.getAnimators(holder.itemView)) {
                     anim.setDuration(animDuration).start();
-                    anim.setInterpolator(animInterpolar);
+                    anim.setInterpolator(animInterpolator);
                 }
                 lastPosition = holder.getLayoutPosition();
             }
         }
+    }
+
+    public List<T> getData() {
+        return data;
     }
 
     public OnItemChildClickListener getOnItemChildClickListener() {
@@ -140,8 +209,8 @@ public abstract class BaseQuickAdapter<T,VH extends BaseViewHolder> extends Recy
         this.animDuration = animDuration;
     }
 
-    public void setAnimInterpolar(Interpolator animInterpolar) {
-        this.animInterpolar = animInterpolar;
+    public void setAnimInterpolator(Interpolator animInterpolator) {
+        this.animInterpolator = animInterpolator;
     }
 
     /**
@@ -170,7 +239,6 @@ public abstract class BaseQuickAdapter<T,VH extends BaseViewHolder> extends Recy
 
     /**
      * try to create Generic VH instance
-     *
      */
     @SuppressWarnings("unchecked")
     private VH createGenericKInstance(Class z, View view) {
@@ -194,7 +262,6 @@ public abstract class BaseQuickAdapter<T,VH extends BaseViewHolder> extends Recy
 
     /**
      * get generic parameter VH
-     *
      */
     private Class getInstancedGenericKClass(Class z) {
         Type type = z.getGenericSuperclass();
