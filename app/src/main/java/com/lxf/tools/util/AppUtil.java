@@ -31,8 +31,14 @@ public class AppUtil {
             am.killBackgroundProcesses(packageName);
     }
 
-    public static void toSettingActivity(Context context){
-        Intent intent =  new Intent(Settings.ACTION_AIRPLANE_MODE_SETTINGS);
+    public static void toSettingActivity(Context context) {
+        Intent intent = new Intent(Settings.ACTION_AIRPLANE_MODE_SETTINGS);
         context.startActivity(intent);
+    }
+
+    public static void toAppDetailActivity(Context context) {
+        context.startActivity(
+                new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                        .setData(Uri.fromParts("package", context.getPackageName(), null)));
     }
 }
