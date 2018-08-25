@@ -34,4 +34,5 @@ dependencies {
     implementation 'com.android.support:design:26.1.0'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.0'
     implementation project(':recyclerhelper')
+    implementation project(':net')
 }
