@@ -23,7 +23,7 @@ class HomeActivity : BaseActivity() {
         adapter.setOnItemClickListener { _, _, position ->
             when(position){
                 0 -> startActivity(Intent(this@HomeActivity,RecyclerActivity::class.java))
-                1 -> startActivity(Intent(this@HomeActivity,RecyclerActivity::class.java))
+                1 -> startActivity(Intent(this@HomeActivity,DialogActivity::class.java))
             }
         }
     }

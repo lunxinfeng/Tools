@@ -23,16 +23,16 @@ public abstract class BaseRequest<R extends BaseRequest,A> {
     private Retrofit.Builder generateRetrofit() {
         return RetrofitHelper.getRetrofitBuilder();
     }
-    protected R build() {
-        OkHttpClient.Builder okHttpClientBuilder = generateOkClient();
-        Retrofit.Builder retrofitBuilder = generateRetrofit();
-        retrofitBuilder.addCallAdapterFactory(RxJava2CallAdapterFactory.create());//增加RxJava2CallAdapterFactory
-        OkHttpClient okHttpClient = okHttpClientBuilder.build();
-        retrofitBuilder.client(okHttpClient);
-        Retrofit retrofit = retrofitBuilder.build();
-        apiService = retrofit.create(Class.forName(A));
-        return (R) this;
-    }
+//    protected R build() {
+//        OkHttpClient.Builder okHttpClientBuilder = generateOkClient();
+//        Retrofit.Builder retrofitBuilder = generateRetrofit();
+//        retrofitBuilder.addCallAdapterFactory(RxJava2CallAdapterFactory.create());//增加RxJava2CallAdapterFactory
+//        OkHttpClient okHttpClient = okHttpClientBuilder.build();
+//        retrofitBuilder.client(okHttpClient);
+//        Retrofit retrofit = retrofitBuilder.build();
+//        apiService = retrofit.create(Class.forName());
+//        return (R) this;
+//    }
 
     protected abstract Observable<ResponseBody> generateRequest();
 }

@@ -15,7 +15,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".ui.RecyclerActivity"
-            android:launchMode="singleTask"/>
+            android:launchMode="singleTask" />
 
         <receiver android:name=".net_hint.NetworkConnectChangedReceiver">
             <intent-filter>
@@ -32,6 +32,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.DialogActivity"
+            android:launchMode="singleTask"/>
     </application>
 
 </manifest>

@@ -6,6 +6,6 @@ public class NetWork {
     private BaseRequest<BaseRequest,ApiService> request;
 
     public void test(){
-        request.
+
     }
 }
