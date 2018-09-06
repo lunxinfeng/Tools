@@ -4,12 +4,17 @@ import android.content.Context
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.view.MotionEvent
+import android.view.View
 import android.widget.EditText
 import android.widget.Toast
+import io.reactivex.Single
+import io.reactivex.disposables.CompositeDisposable
+import java.util.concurrent.TimeUnit
 
 fun Context.toast(msg: String, duration: Int = Toast.LENGTH_SHORT) = Toast.makeText(applicationContext, msg, duration).show()
 
-fun isEmpty(s: String?) = TextUtils.isEmpty(s)
+fun String?.isEmpty() = TextUtils.isEmpty(this)
 
 fun EditText.onChange(onChange:(s: CharSequence?) -> Unit){
     addTextChangedListener(object : TextWatcher {
@@ -23,4 +28,35 @@ fun EditText.onChange(onChange:(s: CharSequence?) -> Unit){
             onChange.invoke(s)
         }
     })
+}
+
+/**
+ * @param num 共点多少次
+ * @param des 行为描述
+ * @param listener 逻辑操作
+ */
+fun View.clickN(num:Int, des:String, listener:(v: View) -> Unit){
+
+    val compositeDisposable = CompositeDisposable()
+    var clickNum = 0
+
+    fun click(listener:(v: View) -> Unit){
+        if (++clickNum == num) {
+            listener.invoke(this)
+            return
+        } else {
+            compositeDisposable.clear()
+            if (clickNum in 3..(num - 1))
+                Toast.makeText(context,"再点${num - clickNum}次$des", Toast.LENGTH_SHORT).show()
+        }
+        val d = Single.timer(1000, TimeUnit.MILLISECONDS)
+                .subscribe { _ -> clickNum = 0 }
+        compositeDisposable.add(d)
+    }
+
+    setOnTouchListener { _, event ->
+        if (event.action == MotionEvent.ACTION_DOWN)
+            click(listener)
+        false
+    }
 }

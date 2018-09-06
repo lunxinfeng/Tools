@@ -1,22 +1,23 @@
-package com.lxf.tools
+package com.lxf.tools.ui
 
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import com.lxf.recyclerhelper.BaseQuickAdapter
 import com.lxf.recyclerhelper.BaseViewHolder
-import kotlinx.android.synthetic.main.activity_main.*
+import com.lxf.tools.R
+import kotlinx.android.synthetic.main.activity_recycler.*
 import com.lxf.tools.net_hint.BaseActivity
 
 
-class MainActivity : BaseActivity() {
+class RecyclerActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_recycler)
 
-        val adapter = Adapter(R.layout.item_recycler_main,null)
+        val adapter = Adapter(R.layout.item_recycler_recycler, null)
         recyclerView.apply {
-            layoutManager = LinearLayoutManager(this@MainActivity)
+            layoutManager = LinearLayoutManager(this@RecyclerActivity)
             this.adapter = adapter.apply {
                 showWithAnimation(true)
                 setErrorView(R.layout.error_view_recycler_main,recyclerView)

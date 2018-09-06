@@ -163,7 +163,7 @@ public abstract class BaseQuickAdapter<T, VH extends BaseViewHolder> extends Rec
         loadError = false;
     }
 
-    protected abstract void convert(VH helper, T item);
+    protected abstract void convert(VH holder, T item);
 
     public void setNewData(@Nullable List<T> data) {
         this.data = data == null ? new ArrayList<T>() : data;

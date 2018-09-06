@@ -1,1 +1,1 @@
-include ':app', ':recyclerhelper', ':net'
+include ':app', ':recyclerhelper', ':net', ':dialog'
