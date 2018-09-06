@@ -1,5 +1,7 @@
 package com.lxf.dialog
 
+import android.animation.Animator
+import android.animation.TimeInterpolator
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Typeface
@@ -7,6 +9,7 @@ import android.graphics.drawable.Drawable
 import android.support.annotation.DrawableRes
 import android.support.annotation.StringRes
 import android.view.View
+import android.view.animation.LinearInterpolator
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.lxf.dialog.layout.DialogLayout
@@ -17,12 +20,14 @@ typealias DialogCallback = (MaterialDialog) -> Unit
 class MaterialDialog(context: Context) : Dialog(context) {
     var autoDismissEnabled: Boolean = true
         internal set
+    private var animIn: BaseAnim? = null
+    private var animOut: BaseAnim? = null
 
     internal val view: DialogLayout = inflate(R.layout.md_dialog_base)
     internal var textViewMessage: TextView? = null
     internal var contentScrollView: DialogScrollView? = null
     internal var contentScrollViewFrame: LinearLayout? = null
-//    internal var contentRecyclerView: DialogRecyclerView? = null
+    //    internal var contentRecyclerView: DialogRecyclerView? = null
     internal var contentCustomView: View? = null
 
     internal val positiveListeners = mutableListOf<DialogCallback>()
@@ -37,9 +42,24 @@ class MaterialDialog(context: Context) : Dialog(context) {
     init {
         setContentView(view)
         this.view.dialog = this
+//        window.apply {
+//            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+//            //设置遮罩层
+//            addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+//            attributes = attributes.apply {
+//                dimAmount = 0.7f
+//            }
+//            attributes = attributes.apply {
+//                width = ViewGroup.LayoutParams.MATCH_PARENT
+//                height = ViewGroup.LayoutParams.MATCH_PARENT
+//            }
+//        }
+        setOnShowListener { showListeners.invokeAll(this) }
+        setOnDismissListener { dismissListeners.invokeAll(this) }
+        setOnCancelListener { cancelListeners.invokeAll(this) }
     }
 
-    fun atLeastOneIsNotNull(des:String, vararg elements:Any?){
+    fun atLeastOneIsNotNull(des: String, vararg elements: Any?) {
         if (elements.filter { it == null }.size == elements.size)
             throw IllegalArgumentException("$des must be have at least one.")
     }
@@ -60,14 +80,18 @@ class MaterialDialog(context: Context) : Dialog(context) {
     fun title(
             @StringRes textRes: Int? = null,
             text: String? = null,
+            textColor: Int? = null,
+            textSize: Float? = null,
             typeface: Typeface? = null
     ): MaterialDialog {
-        atLeastOneIsNotNull("title",textRes,text)
+        atLeastOneIsNotNull("title", textRes, text)
 
         populateText(
                 view.titleLayout.titleView,
                 textRes,
                 text,
+                textColor,
+                textSize,
                 typeface
         )
         return this
@@ -76,21 +100,24 @@ class MaterialDialog(context: Context) : Dialog(context) {
     fun message(
             @StringRes textRes: Int? = null,
             text: CharSequence? = null,
+            textColor: Int? = null,
+            textSize: Float? = null,
             typeface: Typeface? = null
-
     ): MaterialDialog {
         if (this.contentCustomView != null) {
             throw IllegalStateException("message() should be used BEFORE customView().")
         }
         addContentScrollView()
-        addContentMessageView(textRes, text,typeface)
-        atLeastOneIsNotNull("title",textRes,text)
+        addContentMessageView(textRes, text, textColor, textSize, typeface)
+        atLeastOneIsNotNull("title", textRes, text)
         return this
     }
 
     fun positiveButton(
             @StringRes res: Int? = null,
             text: CharSequence? = null,
+            textColor: Int? = null,
+            textSize: Float? = null,
             click: DialogCallback? = null,
             typeface: Typeface? = null
     ): MaterialDialog {
@@ -109,6 +136,8 @@ class MaterialDialog(context: Context) : Dialog(context) {
                 btn,
                 textRes = res,
                 text = text,
+                textColor = textColor,
+                textSize = textSize,
                 typeface = typeface
         )
         return this
@@ -117,6 +146,8 @@ class MaterialDialog(context: Context) : Dialog(context) {
     fun negativeButton(
             @StringRes res: Int? = null,
             text: CharSequence? = null,
+            textColor: Int? = null,
+            textSize: Float? = null,
             click: DialogCallback? = null,
             typeface: Typeface? = null
     ): MaterialDialog {
@@ -135,6 +166,8 @@ class MaterialDialog(context: Context) : Dialog(context) {
                 btn,
                 textRes = res,
                 text = text,
+                textColor = textColor,
+                textSize = textSize,
                 typeface = typeface
         )
         return this
@@ -145,6 +178,30 @@ class MaterialDialog(context: Context) : Dialog(context) {
         return this
     }
 
+    fun animOnShow(
+            anim: BaseAnim,
+            duration: Long = 500L,
+            interpolator: TimeInterpolator = LinearInterpolator()
+    ): MaterialDialog {
+        this.animIn = anim.apply {
+            this.duration = duration
+            this.interpolator = interpolator
+        }
+        this.showListeners.add { startAnim(this.animIn!!) }
+        return this
+    }
+
+    fun animOnDismiss(
+            anim: BaseAnim,
+            duration: Long = 500L,
+            interpolator: TimeInterpolator = LinearInterpolator()
+    ): MaterialDialog {
+        this.animOut = anim.apply {
+            this.duration = duration
+            this.interpolator = interpolator
+        }
+        return this
+    }
 
     fun onPreShow(callback: DialogCallback): MaterialDialog {
         this.preShowListeners.add(callback)
@@ -153,28 +210,28 @@ class MaterialDialog(context: Context) : Dialog(context) {
 
     fun onShow(callback: DialogCallback): MaterialDialog {
         this.showListeners.add(callback)
-        if (this.isShowing) {
-            // Already showing, invoke now
-            this.showListeners.invokeAll(this)
-        }
-        setOnShowListener { this.showListeners.invokeAll(this) }
         return this
     }
 
     fun onDismiss(callback: DialogCallback): MaterialDialog {
         this.dismissListeners.add(callback)
-        setOnDismissListener { dismissListeners.invokeAll(this) }
         return this
     }
 
     fun onCancel(callback: DialogCallback): MaterialDialog {
         this.cancelListeners.add(callback)
-        setOnCancelListener { cancelListeners.invokeAll(this) }
         return this
     }
 
     override fun show() {
         preShow()
         super.show()
+    }
+
+    override fun dismiss() {
+        animOut?.let {
+            it.animatorSet.onAnimatorEnd { super.dismiss() }
+            startAnim(it)
+        } ?: super.dismiss()
     }
 }

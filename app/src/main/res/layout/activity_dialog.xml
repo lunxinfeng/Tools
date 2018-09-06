@@ -15,4 +15,13 @@
         android:text="基础对话框"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnAnimDialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="动画对话框"
+        app:layout_constraintStart_toEndOf="@+id/btnBaseDialog"
+        app:layout_constraintTop_toTopOf="@+id/btnBaseDialog" />
 </android.support.constraint.ConstraintLayout>

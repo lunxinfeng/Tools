@@ -1,5 +1,7 @@
 package com.lxf.dialog
 
+import android.animation.Animator
+import android.animation.AnimatorSet
 import android.content.Context
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
@@ -34,6 +36,26 @@ internal inline fun <T : View> T.waitForLayout(crossinline f: T.() -> Unit) =
                 }
             })
         }
+
+internal fun AnimatorSet.onAnimatorEnd(function:(Animator?) -> Unit){
+    addListener(object : Animator.AnimatorListener {
+        override fun onAnimationRepeat(animation: Animator?) {
+
+        }
+
+        override fun onAnimationEnd(animation: Animator?) {
+            function.invoke(animation)
+        }
+
+        override fun onAnimationCancel(animation: Animator?) {
+
+        }
+
+        override fun onAnimationStart(animation: Animator?) {
+
+        }
+    })
+}
 
 internal fun <T> MaterialDialog.inflate(
         @LayoutRes res: Int,
@@ -90,6 +112,8 @@ internal fun MaterialDialog.populateText(
         textView: TextView,
         @StringRes textRes: Int? = null,
         text: CharSequence? = null,
+        textColor:Int? = null,
+        textSize:Float? = null,
         typeface: Typeface?
 ) {
     val value = text ?: getString(textRes?:0)
@@ -97,6 +121,12 @@ internal fun MaterialDialog.populateText(
         (textView.parent as View).visibility = View.VISIBLE
         textView.visibility = View.VISIBLE
         textView.text = value
+        if (textColor!=null){
+            textView.setTextColor(textColor)
+        }
+        if (textSize!=null){
+            textView.textSize = textSize
+        }
         if (typeface != null) {
             textView.typeface = typeface
         }
@@ -114,10 +144,22 @@ internal fun MaterialDialog.addContentScrollView() {
     }
 }
 
-internal fun MaterialDialog.addContentMessageView(@StringRes res: Int?, text: CharSequence?,typeface: Typeface?) {
+internal fun MaterialDialog.addContentMessageView(
+        @StringRes res: Int?,
+        text: CharSequence?,
+        textColor:Int? = null,
+        textSize:Float? = null,
+        typeface: Typeface?
+) {
     if (this.textViewMessage == null) {
-        this.textViewMessage = TextView(context)
+        this.textViewMessage = inflate(R.layout.md_dialog_stub_message,contentScrollViewFrame)
         this.contentScrollViewFrame!!.addView(this.textViewMessage)
+        if (textColor!=null){
+            this.textViewMessage?.setTextColor(textColor)
+        }
+        if (textSize!=null){
+            this.textViewMessage?.textSize = textSize
+        }
         if (typeface != null) {
             this.textViewMessage?.typeface = typeface
         }
@@ -142,6 +184,12 @@ internal fun MaterialDialog.onActionButtonClicked(which: WhichButton) {
     if (autoDismissEnabled) {
         dismiss()
     }
+}
+
+internal fun MaterialDialog.startAnim(
+        anim: BaseAnim
+){
+    anim.start(window.decorView)
 }
 
 internal fun MaterialDialog.preShow() {
