@@ -1,17 +1,44 @@
 package com.lxf.dialog.ext
 
-import android.graphics.Typeface
+import android.graphics.Point
 import android.graphics.drawable.Drawable
 import android.support.annotation.*
 import android.support.v7.widget.AppCompatButton
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.lxf.dialog.*
+import com.lxf.dialog.listAdapter.DialogAdapter
 
+internal fun MaterialDialog.setWindowConstraints() {
+    val wm = this.window!!.windowManager
+    val display = wm.defaultDisplay
+    val size = Point()
+    display.getSize(size)
+    val windowWidth = size.x
+    val windowHeight = size.y
+
+    context.resources.apply {
+        val windowVerticalPadding = getDimensionPixelSize(
+                R.dimen.md_dialog_vertical_margin
+        )
+        val windowHorizontalPadding = getDimensionPixelSize(
+                R.dimen.md_dialog_horizontal_margin
+        )
+        val maxWidth = getDimensionPixelSize(R.dimen.md_dialog_max_width)
+        val calculatedWidth = windowWidth - windowHorizontalPadding * 2
+
+        this@setWindowConstraints.view.maxHeight = windowHeight - windowVerticalPadding * 2
+        val lp = WindowManager.LayoutParams()
+        lp.copyFrom(this@setWindowConstraints.window!!.attributes)
+        lp.width = Math.min(maxWidth, calculatedWidth)
+        this@setWindowConstraints.window!!.attributes = lp
+    }
+}
 
 internal fun <T> MaterialDialog.inflate(
         @LayoutRes res: Int,
@@ -86,8 +113,8 @@ internal fun MaterialDialog.onActionButtonClicked(which: WhichButton) {
     when (which) {
         WhichButton.POSITIVE -> {
             positiveListeners.invokeAll(this)
-//            val adapter = getListAdapter() as? DialogAdapter<*, *>
-//            adapter?.positiveButtonClicked()
+            val adapter = listAdapter as? DialogAdapter<*, *>
+            adapter?.positiveButtonClicked()
         }
         WhichButton.NEGATIVE -> negativeListeners.invokeAll(this)
         WhichButton.NEUTRAL -> neutralListeners.invokeAll(this)

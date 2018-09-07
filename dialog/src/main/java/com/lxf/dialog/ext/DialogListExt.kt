@@ -6,17 +6,17 @@ import android.support.v7.widget.RecyclerView
 import com.lxf.dialog.FontConfig
 import com.lxf.dialog.MaterialDialog
 import com.lxf.dialog.R
+import com.lxf.dialog.WhichButton
+import com.lxf.dialog.listAdapter.MultiChoiceDialogAdapter
 import com.lxf.dialog.listAdapter.PlainListDialogAdapter
+import com.lxf.dialog.listAdapter.SingleChoiceDialogAdapter
 
 typealias ItemListener =
         ((dialog: MaterialDialog, index: Int, text: String) -> Unit)?
-
-fun MaterialDialog.getSelectedItem():Any?{
-    return when(listAdapter){
-        is PlainListDialogAdapter -> (listAdapter as PlainListDialogAdapter).selectItem
-        else -> null
-    }
-}
+typealias SingleChoiceListener =
+        ((dialog: MaterialDialog, index: Int, text: String) -> Unit)?
+typealias MultiChoiceListener =
+        ((dialog: MaterialDialog, indices: IntArray, items: List<String>) -> Unit)?
 
 fun MaterialDialog.listItems(
         @ArrayRes res: Int? = null,
@@ -46,6 +46,80 @@ fun MaterialDialog.listItems(
                     items = array!!,
                     fontConfig = fontConfig,
                     disabledItems = disabledIndices,
+                    waitForActionButton = waitForPositiveButton,
+                    selection = selection
+            )
+    )
+}
+
+fun MaterialDialog.listItemsSingleChoice(
+        @ArrayRes res: Int? = null,
+        items: List<String>? = null,
+        disabledIndices: IntArray? = null,
+        initialSelection: Int = -1,
+        fontConfig: FontConfig? = null,
+        waitForPositiveButton: Boolean = true,
+        selection: SingleChoiceListener = null
+): MaterialDialog {
+    val array = items ?: getStringArray(res)?.toList()
+    val adapter = listAdapter
+
+    if (adapter is SingleChoiceDialogAdapter) {
+        if (array != null) {
+            adapter.replaceItems(array, selection)
+        }
+        if (disabledIndices != null) {
+            adapter.disableItems(disabledIndices)
+        }
+        return this
+    }
+
+    atLeastOneIsNotNull("listItemsSingleChoice", items, res)
+    getActionButton(WhichButton.POSITIVE).isEnabled = initialSelection > -1
+    return customListAdapter(
+            SingleChoiceDialogAdapter(
+                    dialog = this,
+                    items = array!!,
+                    disabledItems = disabledIndices,
+                    initialSelection = initialSelection,
+                    fontConfig = fontConfig,
+                    waitForActionButton = waitForPositiveButton,
+                    selection = selection
+            )
+    )
+}
+
+fun MaterialDialog.listItemsMultiChoice(
+        @ArrayRes res: Int? = null,
+        items: List<String>? = null,
+        disabledIndices: IntArray? = null,
+        initialSelection: IntArray = IntArray(0),
+        fontConfig: FontConfig? = null,
+        waitForPositiveButton: Boolean = true,
+        selection: MultiChoiceListener = null
+): MaterialDialog {
+    val array = items ?: getStringArray(res)?.toList()
+    val adapter = listAdapter
+
+    if (adapter is MultiChoiceDialogAdapter) {
+        if (array != null) {
+            adapter.replaceItems(array, selection)
+        }
+        if (disabledIndices != null) {
+            adapter.disableItems(disabledIndices)
+        }
+        return this
+    }
+
+    atLeastOneIsNotNull("listItemsMultiChoice", items, res)
+    getActionButton(WhichButton.POSITIVE).isEnabled = initialSelection.isNotEmpty()
+    return customListAdapter(
+            MultiChoiceDialogAdapter(
+                    dialog = this,
+                    items = array!!,
+                    disabledItems = disabledIndices,
+                    initialSelection = initialSelection,
+                    fontConfig = fontConfig,
                     waitForActionButton = waitForPositiveButton,
                     selection = selection
             )

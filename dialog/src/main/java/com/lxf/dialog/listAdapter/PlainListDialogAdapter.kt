@@ -35,13 +35,8 @@ internal class PlainListDialogAdapter(
   private var disabledIndices: IntArray = disabledItems ?: IntArray(0)
   private var activatedIndex = -1
 
-  var selectItem:String? = null
-      get() = if (activatedIndex == -1) null else items[activatedIndex]
-
   fun itemClicked(index: Int) {
     if (waitForActionButton && dialog.hasActionButtons()) {
-      // Wait for action button, mark clicked item as activated so that we can call the selection
-      // listener when the positive action button is pressed.
       val lastActivated = activatedIndex
       activatedIndex = index
       if (lastActivated != -1) {
@@ -49,7 +44,6 @@ internal class PlainListDialogAdapter(
       }
       notifyItemChanged(index)
     } else {
-      // Don't wait for action button, call listener and dismiss if auto dismiss is applicable
       this.selection?.invoke(dialog, index, this.items[index])
       if (dialog.autoDismissEnabled && !dialog.hasActionButtons()) {
         dialog.dismiss()

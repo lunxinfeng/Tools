@@ -46,6 +46,7 @@ class MaterialDialog(context: Context) : Dialog(context) {
     init {
         setContentView(view)
         this.view.dialog = this
+        setWindowConstraints()
 //        window.apply {
 //            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 //            //设置遮罩层

@@ -128,20 +128,20 @@
     <item name="android:layout_gravity">start|center_vertical</item>
   </style>
 
-  <!--<style name="MD_ListItemText.Choice" tools:ignore="NewApi">-->
-    <!--<item name="android:layout_width">wrap_content</item>-->
-    <!--<item name="android:layout_height">wrap_content</item>-->
-    <!--<item name="android:gravity">start|center_vertical</item>-->
-    <!--<item name="android:layout_gravity">start|center_vertical</item>-->
-    <!--<item name="android:minHeight">@dimen/md_listitem_height</item>-->
-    <!--<item name="android:paddingBottom">@dimen/md_listitem_vertical_margin_choice</item>-->
-    <!--<item name="android:paddingLeft">@dimen/md_listitem_control_margin</item>-->
-    <!--<item name="android:paddingStart">@dimen/md_listitem_control_margin</item>-->
-    <!--<item name="android:paddingTop">@dimen/md_listitem_vertical_margin_choice</item>-->
-    <!--<item name="android:textSize">@dimen/md_listitem_textsize</item>-->
-    <!--<item name="android:textColor">@color/md_list_item_textcolor</item>-->
-    <!--<item name="android:layout_marginTop">0dp</item>-->
-    <!--<item name="android:layout_marginBottom">0dp</item>-->
-  <!--</style>-->
+  <style name="MD_ListItemText.Choice" tools:ignore="NewApi">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:gravity">start|center_vertical</item>
+    <item name="android:layout_gravity">start|center_vertical</item>
+    <item name="android:minHeight">@dimen/md_listitem_height</item>
+    <item name="android:paddingBottom">@dimen/md_listitem_vertical_margin_choice</item>
+    <item name="android:paddingLeft">@dimen/md_listitem_control_margin</item>
+    <item name="android:paddingStart">@dimen/md_listitem_control_margin</item>
+    <item name="android:paddingTop">@dimen/md_listitem_vertical_margin_choice</item>
+    <item name="android:textSize">@dimen/md_listitem_textsize</item>
+    <item name="android:textColor">@color/md_list_item_textcolor</item>
+    <item name="android:layout_marginTop">0dp</item>
+    <item name="android:layout_marginBottom">0dp</item>
+  </style>
 
 </resources>
