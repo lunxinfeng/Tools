@@ -7,6 +7,7 @@ import android.view.animation.BounceInterpolator
 import com.lxf.dialog.FontConfig
 import com.lxf.dialog.MaterialDialog
 import com.lxf.dialog.anim.*
+import com.lxf.dialog.ext.input
 import com.lxf.dialog.ext.listItems
 import com.lxf.dialog.ext.listItemsMultiChoice
 import com.lxf.dialog.ext.listItemsSingleChoice
@@ -25,6 +26,7 @@ class DialogActivity : AppCompatActivity() {
         btnListBase.setOnClickListener { listDialog() }
         btnSingleChoice.setOnClickListener { singleChoiceDialog() }
         btnMultiChoice.setOnClickListener { multiChoiceDialog() }
+        btnInput.setOnClickListener { inputDialog() }
     }
 
     private fun baseDialog(){
@@ -93,6 +95,21 @@ class DialogActivity : AppCompatActivity() {
                 .positiveButton(text = "确定")
                 .negativeButton(text = "取消")
                 .animOnShow(ScaleIn(),interpolator = BounceInterpolator())
+                .show()
+    }
+
+    private fun inputDialog(){
+        MaterialDialog(this)
+                .title(text = "SingleChoiceDialog")
+                .input(
+                        hint = "请输入姓名",
+                        maxLength = 12
+                ){_, charSequence ->
+                    toast(charSequence.toString())
+                }
+                .positiveButton(text = "确定")
+                .negativeButton(text = "取消")
+                .animOnShow(SlideTopIn(),interpolator = BounceInterpolator())
                 .show()
     }
 }

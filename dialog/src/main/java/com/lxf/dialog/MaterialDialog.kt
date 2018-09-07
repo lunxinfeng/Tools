@@ -3,7 +3,6 @@ package com.lxf.dialog
 import android.animation.TimeInterpolator
 import android.app.Dialog
 import android.content.Context
-import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.support.annotation.DrawableRes
 import android.support.annotation.StringRes
@@ -20,13 +19,28 @@ import com.lxf.dialog.layout.DialogScrollView
 typealias DialogCallback = (MaterialDialog) -> Unit
 
 class MaterialDialog(context: Context) : Dialog(context) {
+    /**
+     * 是否点击底部按钮自动消失
+     */
     var autoDismissEnabled: Boolean = true
         internal set
+    /**
+     * 列表适配器
+     */
     var listAdapter:RecyclerView.Adapter<*>? = null
         get() = contentRecyclerView?.adapter
+    /**
+     * dialog显示动画
+     */
     private var animIn: BaseAnim? = null
+    /**
+     * dialog退出动画
+     */
     private var animOut: BaseAnim? = null
 
+    /**
+     * dialog根view
+     */
     internal val view: DialogLayout = inflate(R.layout.md_dialog_base)
     internal var textViewMessage: TextView? = null
     internal var contentScrollView: DialogScrollView? = null
