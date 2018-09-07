@@ -61,18 +61,7 @@ class MaterialDialog(context: Context) : Dialog(context) {
         setContentView(view)
         this.view.dialog = this
         setWindowConstraints()
-//        window.apply {
-//            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-//            //设置遮罩层
-//            addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-//            attributes = attributes.apply {
-//                dimAmount = 0.7f
-//            }
-//            attributes = attributes.apply {
-//                width = ViewGroup.LayoutParams.MATCH_PARENT
-//                height = ViewGroup.LayoutParams.MATCH_PARENT
-//            }
-//        }
+
         setOnShowListener { showListeners.invokeAll(this) }
         setOnDismissListener { dismissListeners.invokeAll(this) }
         setOnCancelListener { cancelListeners.invokeAll(this) }
