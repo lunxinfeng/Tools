@@ -1,6 +1,5 @@
 package com.lxf.dialog
 
-import android.animation.Animator
 import android.animation.TimeInterpolator
 import android.app.Dialog
 import android.content.Context
@@ -8,11 +7,14 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.support.annotation.DrawableRes
 import android.support.annotation.StringRes
+import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.lxf.dialog.ext.*
 import com.lxf.dialog.layout.DialogLayout
+import com.lxf.dialog.layout.DialogRecyclerView
 import com.lxf.dialog.layout.DialogScrollView
 
 typealias DialogCallback = (MaterialDialog) -> Unit
@@ -20,6 +22,8 @@ typealias DialogCallback = (MaterialDialog) -> Unit
 class MaterialDialog(context: Context) : Dialog(context) {
     var autoDismissEnabled: Boolean = true
         internal set
+    var listAdapter:RecyclerView.Adapter<*>? = null
+        get() = contentRecyclerView?.adapter
     private var animIn: BaseAnim? = null
     private var animOut: BaseAnim? = null
 
@@ -27,7 +31,7 @@ class MaterialDialog(context: Context) : Dialog(context) {
     internal var textViewMessage: TextView? = null
     internal var contentScrollView: DialogScrollView? = null
     internal var contentScrollViewFrame: LinearLayout? = null
-    //    internal var contentRecyclerView: DialogRecyclerView? = null
+    internal var contentRecyclerView: DialogRecyclerView? = null
     internal var contentCustomView: View? = null
 
     internal val positiveListeners = mutableListOf<DialogCallback>()
@@ -80,9 +84,7 @@ class MaterialDialog(context: Context) : Dialog(context) {
     fun title(
             @StringRes textRes: Int? = null,
             text: String? = null,
-            textColor: Int? = null,
-            textSize: Float? = null,
-            typeface: Typeface? = null
+            fontConfig:FontConfig? = null
     ): MaterialDialog {
         atLeastOneIsNotNull("title", textRes, text)
 
@@ -90,9 +92,7 @@ class MaterialDialog(context: Context) : Dialog(context) {
                 view.titleLayout.titleView,
                 textRes,
                 text,
-                textColor,
-                textSize,
-                typeface
+                fontConfig
         )
         return this
     }
@@ -100,15 +100,13 @@ class MaterialDialog(context: Context) : Dialog(context) {
     fun message(
             @StringRes textRes: Int? = null,
             text: CharSequence? = null,
-            textColor: Int? = null,
-            textSize: Float? = null,
-            typeface: Typeface? = null
+            fontConfig:FontConfig? = null
     ): MaterialDialog {
         if (this.contentCustomView != null) {
             throw IllegalStateException("message() should be used BEFORE customView().")
         }
         addContentScrollView()
-        addContentMessageView(textRes, text, textColor, textSize, typeface)
+        addContentMessageView(textRes, text, fontConfig)
         atLeastOneIsNotNull("title", textRes, text)
         return this
     }
@@ -116,10 +114,8 @@ class MaterialDialog(context: Context) : Dialog(context) {
     fun positiveButton(
             @StringRes res: Int? = null,
             text: CharSequence? = null,
-            textColor: Int? = null,
-            textSize: Float? = null,
-            click: DialogCallback? = null,
-            typeface: Typeface? = null
+            fontConfig:FontConfig? = null,
+            click: DialogCallback? = null
     ): MaterialDialog {
         if (click != null) {
             positiveListeners.add(click)
@@ -136,9 +132,7 @@ class MaterialDialog(context: Context) : Dialog(context) {
                 btn,
                 textRes = res,
                 text = text,
-                textColor = textColor,
-                textSize = textSize,
-                typeface = typeface
+                fontConfig = fontConfig
         )
         return this
     }
@@ -146,10 +140,8 @@ class MaterialDialog(context: Context) : Dialog(context) {
     fun negativeButton(
             @StringRes res: Int? = null,
             text: CharSequence? = null,
-            textColor: Int? = null,
-            textSize: Float? = null,
-            click: DialogCallback? = null,
-            typeface: Typeface? = null
+            fontConfig:FontConfig? = null,
+            click: DialogCallback? = null
     ): MaterialDialog {
         if (click != null) {
             negativeListeners.add(click)
@@ -166,9 +158,7 @@ class MaterialDialog(context: Context) : Dialog(context) {
                 btn,
                 textRes = res,
                 text = text,
-                textColor = textColor,
-                textSize = textSize,
-                typeface = typeface
+                fontConfig = fontConfig
         )
         return this
     }

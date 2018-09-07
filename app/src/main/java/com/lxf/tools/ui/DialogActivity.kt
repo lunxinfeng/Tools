@@ -1,11 +1,16 @@
 package com.lxf.tools.ui
 
+import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.animation.BounceInterpolator
+import com.lxf.dialog.FontConfig
 import com.lxf.dialog.MaterialDialog
 import com.lxf.dialog.anim.*
+import com.lxf.dialog.ext.getSelectedItem
+import com.lxf.dialog.ext.listItems
 import com.lxf.tools.R
+import com.lxf.tools.util.toast
 import kotlinx.android.synthetic.main.activity_dialog.*
 
 class DialogActivity : AppCompatActivity() {
@@ -16,6 +21,7 @@ class DialogActivity : AppCompatActivity() {
 
         btnBaseDialog.setOnClickListener { baseDialog() }
         btnAnimDialog.setOnClickListener { animDialog() }
+        btnListBase.setOnClickListener { listDialog() }
     }
 
     private fun baseDialog(){
@@ -33,8 +39,27 @@ class DialogActivity : AppCompatActivity() {
                 .message(text = "I am a AnimDialog!")
                 .positiveButton(text = "确定")
                 .negativeButton(text = "取消")
+//                .animOnShow(ScaleIn(),interpolator = BounceInterpolator())
+//                .animOnDismiss(ScaleOut(),duration = 300L)
+                .animOnShow(ShakeIn())
+                .animOnDismiss(RotateBottomOut())
+//                .animOnShow(SlideTopIn())
+//                .animOnDismiss(SlideBottomOut())
+                .show()
+    }
+
+    private fun listDialog(){
+        MaterialDialog(this)
+                .title(text = "ListDialog")
+                .listItems(
+                        items = listOf("条目1","条目2","条目3","条目4","条目5"),
+                        fontConfig = FontConfig(textColor = Color.RED)
+                )
+                .positiveButton(text = "确定"){
+                    toast(it.getSelectedItem().toString())
+                }
+                .negativeButton(text = "取消")
                 .animOnShow(ScaleIn(),interpolator = BounceInterpolator())
-                .animOnDismiss(ScaleOut(),duration = 300L)
                 .show()
     }
 }

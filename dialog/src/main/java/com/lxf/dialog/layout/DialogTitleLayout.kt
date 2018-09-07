@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.lxf.dialog.R
-import com.lxf.dialog.dimenPx
-import com.lxf.dialog.isVisible
+import com.lxf.dialog.ext.dimenPx
+import com.lxf.dialog.ext.isVisible
 
 /**
  * dialog顶部布局

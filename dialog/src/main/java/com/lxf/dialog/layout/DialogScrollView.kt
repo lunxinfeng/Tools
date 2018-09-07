@@ -3,7 +3,6 @@ package com.lxf.dialog.layout
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.ScrollView
-import com.lxf.dialog.waitForLayout
 
 
 class DialogScrollView(

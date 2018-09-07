@@ -1,96 +1,23 @@
-package com.lxf.dialog
+package com.lxf.dialog.ext
 
-import android.animation.Animator
-import android.animation.AnimatorSet
-import android.content.Context
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.support.annotation.*
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.AppCompatButton
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.lxf.dialog.*
 
-
-fun <T:View> T.isVisible():Boolean{
-    return if (this is Button)
-        visibility == View.VISIBLE && text.trim().isNotEmpty()
-    else
-        visibility == View.VISIBLE
-}
-
-fun <T:View> T.dimenPx(@DimenRes res:Int) = resources.getDimensionPixelSize(res)
-
-internal inline fun <T : View> T.waitForLayout(crossinline f: T.() -> Unit) =
-        viewTreeObserver.apply {
-            addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    removeOnGlobalLayoutListener(this)
-                    this@waitForLayout.f()
-                }
-            })
-        }
-
-internal fun AnimatorSet.onAnimatorEnd(function:(Animator?) -> Unit){
-    addListener(object : Animator.AnimatorListener {
-        override fun onAnimationRepeat(animation: Animator?) {
-
-        }
-
-        override fun onAnimationEnd(animation: Animator?) {
-            function.invoke(animation)
-        }
-
-        override fun onAnimationCancel(animation: Animator?) {
-
-        }
-
-        override fun onAnimationStart(animation: Animator?) {
-
-        }
-    })
-}
 
 internal fun <T> MaterialDialog.inflate(
         @LayoutRes res: Int,
         root: ViewGroup? = null
 ): T {
     return LayoutInflater.from(context).inflate(res, root, false) as T
-}
-
-internal fun getDrawable(
-        context: Context,
-        @DrawableRes res: Int? = null,
-        @AttrRes attr: Int? = null,
-        fallback: Drawable? = null
-): Drawable? {
-    if (attr != null) {
-        val a = context.obtainStyledAttributes(intArrayOf(attr))
-        try {
-            var d = a.getDrawable(0)
-            if (d == null && fallback != null) {
-                d = fallback
-            }
-            return d
-        } finally {
-            a.recycle()
-        }
-    }
-    if (res == null) return fallback
-    return ContextCompat.getDrawable(context, res)
-}
-
-internal fun MaterialDialog.getString(
-        @StringRes res: Int
-): CharSequence? {
-    if (res == 0) return null
-    return context.resources.getText(res)
 }
 
 internal fun MaterialDialog.populateIcon(
@@ -112,24 +39,15 @@ internal fun MaterialDialog.populateText(
         textView: TextView,
         @StringRes textRes: Int? = null,
         text: CharSequence? = null,
-        textColor:Int? = null,
-        textSize:Float? = null,
-        typeface: Typeface?
+        fontConfig:FontConfig?
 ) {
     val value = text ?: getString(textRes?:0)
     if (value != null) {
         (textView.parent as View).visibility = View.VISIBLE
         textView.visibility = View.VISIBLE
         textView.text = value
-        if (textColor!=null){
-            textView.setTextColor(textColor)
-        }
-        if (textSize!=null){
-            textView.textSize = textSize
-        }
-        if (typeface != null) {
-            textView.typeface = typeface
-        }
+
+        fontConfig?.let { textView.config(it) }
     } else {
         textView.visibility = View.GONE
     }
@@ -147,26 +65,19 @@ internal fun MaterialDialog.addContentScrollView() {
 internal fun MaterialDialog.addContentMessageView(
         @StringRes res: Int?,
         text: CharSequence?,
-        textColor:Int? = null,
-        textSize:Float? = null,
-        typeface: Typeface?
+        fontConfig:FontConfig?
 ) {
     if (this.textViewMessage == null) {
         this.textViewMessage = inflate(R.layout.md_dialog_stub_message,contentScrollViewFrame)
         this.contentScrollViewFrame!!.addView(this.textViewMessage)
-        if (textColor!=null){
-            this.textViewMessage?.setTextColor(textColor)
-        }
-        if (textSize!=null){
-            this.textViewMessage?.textSize = textSize
-        }
-        if (typeface != null) {
-            this.textViewMessage?.typeface = typeface
-        }
+
+        fontConfig?.let { this.textViewMessage?.config(it) }
     }
     atLeastOneIsNotNull("message", text, res)
     this.textViewMessage!!.text = text ?: getString(res!!)
 }
+
+internal fun MaterialDialog.hasActionButtons() = view.buttonsLayout.visibleButtons.isNotEmpty()
 
 internal fun MaterialDialog.getActionButton(which: WhichButton) =
         view.buttonsLayout.actionButtons[which.index] as AppCompatButton

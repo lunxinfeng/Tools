@@ -4,6 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.ViewGroup
 import com.lxf.dialog.*
+import com.lxf.dialog.ext.dimenPx
+import com.lxf.dialog.ext.isVisible
+import com.lxf.dialog.ext.onActionButtonClicked
 
 /**
  * dialog底部布局

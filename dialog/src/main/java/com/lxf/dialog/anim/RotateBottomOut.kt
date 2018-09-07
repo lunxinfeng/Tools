@@ -5,11 +5,14 @@ import android.view.View
 import com.lxf.dialog.BaseAnim
 
 
-class SlideTopOut: BaseAnim() {
+class RotateBottomOut: BaseAnim() {
     override fun setupAnimation(view: View) {
         animatorSet.playTogether(
                 ObjectAnimator
-                        .ofFloat(view, "translationY", 0f, -200f)
+                        .ofFloat(view, "rotationX", 0f, 90f)
+                        .setDuration(duration),
+                ObjectAnimator
+                        .ofFloat(view, "translationY", 0f, 200f)
                         .setDuration(duration),
                 ObjectAnimator
                         .ofFloat(view, "alpha", 1f, 0f)

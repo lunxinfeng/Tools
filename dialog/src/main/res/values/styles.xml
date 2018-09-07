@@ -93,20 +93,20 @@
     <item name="android:orientation">vertical</item>
   </style>
 
-  <!--<style name="MD_ListItemText" tools:ignore="NewApi">-->
-    <!--<item name="android:layout_width">wrap_content</item>-->
-    <!--<item name="android:layout_height">wrap_content</item>-->
-    <!--<item name="android:gravity">start|center_vertical</item>-->
-    <!--<item name="android:layout_gravity">start|center_vertical</item>-->
-    <!--<item name="android:layout_marginTop">@dimen/md_listitem_vertical_margin</item>-->
-    <!--<item name="android:layout_marginBottom">@dimen/md_listitem_vertical_margin</item>-->
-    <!--<item name="android:layout_marginLeft">@dimen/md_listitem_margin_left</item>-->
-    <!--<item name="android:layout_marginStart">@dimen/md_listitem_margin_left</item>-->
-    <!--<item name="android:layout_marginRight">@dimen/md_dialog_frame_margin_horizontal</item>-->
-    <!--<item name="android:layout_marginEnd">@dimen/md_dialog_frame_margin_horizontal</item>-->
-    <!--<item name="android:textSize">@dimen/md_listitem_textsize</item>-->
-    <!--<item name="android:textColor">@color/md_list_item_textcolor</item>-->
-  <!--</style>-->
+  <style name="MD_ListItemText" tools:ignore="NewApi">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:gravity">start|center_vertical</item>
+    <item name="android:layout_gravity">start|center_vertical</item>
+    <item name="android:layout_marginTop">@dimen/md_listitem_vertical_margin</item>
+    <item name="android:layout_marginBottom">@dimen/md_listitem_vertical_margin</item>
+    <item name="android:layout_marginLeft">@dimen/md_listitem_margin_left</item>
+    <item name="android:layout_marginStart">@dimen/md_listitem_margin_left</item>
+    <item name="android:layout_marginRight">@dimen/md_dialog_frame_margin_horizontal</item>
+    <item name="android:layout_marginEnd">@dimen/md_dialog_frame_margin_horizontal</item>
+    <item name="android:textSize">@dimen/md_listitem_textsize</item>
+    <item name="android:textColor">@color/md_list_item_textcolor</item>
+  </style>
 
   <style name="MD_ListItem.Choice">
     <item name="android:background">?selectableItemBackground</item>
