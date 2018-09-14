@@ -29,7 +29,7 @@ internal class OkHttpConfig private constructor(){
         fun getInstance() =
                 instance ?: synchronized(this) {
                     instance
-                            ?: OkHttpConfig()
+                            ?: OkHttpConfig().apply { instance = this }
                 }
     }
 

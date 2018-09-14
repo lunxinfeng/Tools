@@ -34,6 +34,8 @@ dependencies {
     implementation rootProject.ext.dependencies.design
     implementation rootProject.ext.dependencies.cardview_v7
     implementation rootProject.ext.dependencies.rxJava
+    implementation rootProject.ext.dependencies.retrofit_gson_converter
+    implementation rootProject.ext.dependencies.okhttp_logging
     implementation project(':recyclerhelper')
     implementation project(':rxretrofit')
     implementation project(':dialog')

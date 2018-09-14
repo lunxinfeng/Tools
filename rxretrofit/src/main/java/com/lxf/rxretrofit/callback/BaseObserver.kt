@@ -23,7 +23,7 @@ abstract class BaseObserver<T> : Observer<T>,CallBack<T> {
     }
 
     override fun onError(e: Throwable) {
-        doOnError(ApiException.handleException(e).errorInfo.toString())
+        doOnError(e,ApiException.handleException(e).errorInfo.toString())
         disposable()
     }
 

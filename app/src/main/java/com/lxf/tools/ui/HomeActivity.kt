@@ -19,11 +19,16 @@ class HomeActivity : BaseActivity() {
             adapter = this@HomeActivity.adapter
         }
 
-        adapter.setNewData(listOf("RecyclerAdapterHelper","Dialog"))
+        adapter.setNewData(listOf(
+                "RecyclerAdapterHelper",
+                "Dialog",
+                "Retrofit"
+        ))
         adapter.setOnItemClickListener { _, _, position ->
             when(position){
                 0 -> startActivity(Intent(this@HomeActivity,RecyclerActivity::class.java))
                 1 -> startActivity(Intent(this@HomeActivity,DialogActivity::class.java))
+                2 -> startActivity(Intent(this@HomeActivity,RetrofitActivity::class.java))
             }
         }
     }

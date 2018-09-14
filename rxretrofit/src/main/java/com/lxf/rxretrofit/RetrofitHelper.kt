@@ -5,6 +5,8 @@ import com.lxf.rxretrofit.config.RetrofitConfig
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.CallAdapter
+import retrofit2.Converter
 import java.io.InputStream
 import javax.net.ssl.HostnameVerifier
 
@@ -17,7 +19,7 @@ class RetrofitHelper private constructor(){
 
         fun getInstance() =
                 instance ?: synchronized(this) {
-                    instance ?: RetrofitHelper()
+                    instance ?: RetrofitHelper().apply { instance = this }
                 }
     }
 
@@ -82,6 +84,16 @@ class RetrofitHelper private constructor(){
      */
     fun certificates(bksFile: InputStream? = null, password: String? = null, vararg certificates: InputStream): RetrofitHelper {
         OkHttpConfig.getInstance().sslSocketFactory(bksFile, password, *certificates)
+        return this
+    }
+
+    fun addCallAdapterFactory(factory: CallAdapter.Factory): RetrofitHelper{
+        RetrofitConfig.getInstance().addCallAdapterFactory(factory)
+        return this
+    }
+
+    fun addConverterFactory(factory: Converter.Factory): RetrofitHelper{
+        RetrofitConfig.getInstance().addConverterFactory(factory)
         return this
     }
 

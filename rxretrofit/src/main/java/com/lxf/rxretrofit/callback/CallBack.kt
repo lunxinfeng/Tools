@@ -7,5 +7,5 @@ interface CallBack<T> {
     fun doOnSubscribe(d: Disposable)
     fun doOnNext(data:T)
     fun doOnComplete()
-    fun doOnError(errorMessage:String)
+    fun doOnError(e: Throwable,errorMessage:String)
 }

@@ -1,4 +1,4 @@
-package com.lxf.rxretrofit.config
+package com.lxf.rxretrofit
 
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import okhttp3.OkHttpClient
@@ -53,4 +53,5 @@ internal class RetrofitConfig private constructor() {
     internal fun build() = retrofitBuilder.build()
 
     internal fun <T> create(service: Class<T>) = build().create(service)
+
 }
