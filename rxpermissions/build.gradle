@@ -1,43 +1,38 @@
-apply plugin: 'com.android.application'
-
+apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-
-apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion rootProject.ext.build_version.compileSdkVersion
+
     defaultConfig {
-        applicationId "com.lxf.tools"
         minSdkVersion rootProject.ext.build_version.minSdkVersion
         targetSdkVersion rootProject.ext.build_version.targetSdkVersion
         versionCode 1
         versionName "1.0"
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
     implementation rootProject.ext.dependencies.appcompatV7
-    implementation rootProject.ext.dependencies.constraint_layout
     testImplementation rootProject.ext.dependencies.test_junit
     androidTestImplementation rootProject.ext.dependencies.test_runner
     androidTestImplementation rootProject.ext.dependencies.test_espresso
-    implementation rootProject.ext.dependencies.gson
-    implementation rootProject.ext.dependencies.design
-    implementation rootProject.ext.dependencies.cardview_v7
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation rootProject.ext.dependencies.rxJava
-    implementation rootProject.ext.dependencies.retrofit_gson_converter
-    implementation rootProject.ext.dependencies.okhttp_logging
-    implementation project(':recyclerhelper')
-    implementation project(':rxretrofit')
-    implementation project(':dialog')
-    implementation project(':rxpermissions')
+}
+repositories {
+    mavenCentral()
 }

@@ -1,8 +1,9 @@
 package com.lxf.tools.ui
 
-import android.icu.lang.UCharacter.GraphemeClusterBreak.L
+import android.Manifest
 import android.os.Bundle
 import android.util.Log
+import com.lxf.rxpermissions.RxPermissions
 import com.lxf.rxretrofit.RetrofitHelper
 import com.lxf.rxretrofit.callback.BaseView
 import com.lxf.rxretrofit.callback.ProgressObserver
@@ -30,7 +31,7 @@ class RetrofitActivity : BaseActivity() {
 
         btnObject.setOnClickListener { getVersion() }
         btnMap.setOnClickListener { map() }
-        btnDownload.setOnClickListener { download() }
+        btnDownload.setOnClickListener { permission() }
     }
 
     private fun init(){
@@ -92,6 +93,16 @@ class RetrofitActivity : BaseActivity() {
                         Log.d(TAG,"doOnNext：$data")
                     }
                 })
+    }
+
+    private fun permission(){
+        RxPermissions.newInstance(this)
+                .request(
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                )
+                .subscribe { if (it) download() else toast("权限被拒绝") }
+
     }
 
     private fun download(){
