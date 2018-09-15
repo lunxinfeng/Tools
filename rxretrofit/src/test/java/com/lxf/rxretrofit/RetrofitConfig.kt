@@ -27,6 +27,7 @@ internal class RetrofitConfig private constructor() {
                     instance
                             ?: RetrofitConfig().apply { instance = this }
                 }
+        fun newInstance() = RetrofitConfig()
     }
 
     internal fun addCallAdapterFactory(factory: CallAdapter.Factory): RetrofitConfig {
@@ -53,5 +54,4 @@ internal class RetrofitConfig private constructor() {
     internal fun build() = retrofitBuilder.build()
 
     internal fun <T> create(service: Class<T>) = build().create(service)
-
 }

@@ -1,17 +1,22 @@
 package com.lxf.tools.ui
 
+import android.icu.lang.UCharacter.GraphemeClusterBreak.L
 import android.os.Bundle
 import android.util.Log
 import com.lxf.rxretrofit.RetrofitHelper
 import com.lxf.rxretrofit.callback.BaseView
 import com.lxf.rxretrofit.callback.ProgressObserver
+import com.lxf.rxretrofit.download
 import com.lxf.rxretrofit.transformer.Transformer
 import com.lxf.tools.ApiService
 import com.lxf.tools.R
 import com.lxf.tools.bean.*
 import com.lxf.tools.net_hint.BaseActivity
+import com.lxf.tools.util.getSDPath
 import com.lxf.tools.util.io_main_izis
+import com.lxf.tools.util.toast
 import kotlinx.android.synthetic.main.activity_retrofit.*
+import java.io.File
 import java.util.HashMap
 
 class RetrofitActivity : BaseActivity() {
@@ -25,6 +30,7 @@ class RetrofitActivity : BaseActivity() {
 
         btnObject.setOnClickListener { getVersion() }
         btnMap.setOnClickListener { map() }
+        btnDownload.setOnClickListener { download() }
     }
 
     private fun init(){
@@ -86,5 +92,26 @@ class RetrofitActivity : BaseActivity() {
                         Log.d(TAG,"doOnNext：$data")
                     }
                 })
+    }
+
+    private fun download(){
+        RetrofitHelper.newInstance()
+                .debug(true)
+                .download(
+                        "http://www.izis.cn/GoWebService/yztv_10.apk",
+                        getSDPath() + File.separator + "yztv.apk",
+                        progressListener = {_, _, progress, done ->
+                            Log.d(TAG,"download：$progress\t$done")
+                            progressBar.progress = progress
+                        },
+                        completeListener = {
+                            Log.d(TAG,"download complete：complete")
+                            toast("complete")
+                        },
+                        errorListener = {
+                            Log.d(TAG,"download error：$it")
+                            toast(it)
+                        }
+                )
     }
 }

@@ -27,5 +27,11 @@ public class ExampleUnitTest {
         System.out.println(retrofitConfig);
         retrofitConfig = RetrofitConfig.Companion.getInstance();
         System.out.println(retrofitConfig);
+        retrofitConfig = RetrofitConfig.Companion.newInstance();
+        System.out.println(retrofitConfig);
+        retrofitConfig = RetrofitConfig.Companion.newInstance();
+        System.out.println(retrofitConfig);
+        retrofitConfig = RetrofitConfig.Companion.getInstance();
+        System.out.println(retrofitConfig);
     }
 }

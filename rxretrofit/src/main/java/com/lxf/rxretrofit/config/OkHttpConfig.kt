@@ -31,6 +31,7 @@ internal class OkHttpConfig private constructor(){
                     instance
                             ?: OkHttpConfig().apply { instance = this }
                 }
+        fun newInstance() = OkHttpConfig()
     }
 
     /**

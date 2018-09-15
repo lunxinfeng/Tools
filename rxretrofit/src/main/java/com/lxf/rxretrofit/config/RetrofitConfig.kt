@@ -1,6 +1,7 @@
 package com.lxf.rxretrofit.config
 
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import com.lxf.rxretrofit.converter.NullOnEmptyConverterFactory
 import okhttp3.OkHttpClient
 import retrofit2.CallAdapter
 import retrofit2.Converter
@@ -14,6 +15,7 @@ internal class RetrofitConfig private constructor() {
     init {
         retrofitBuilder = Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(NullOnEmptyConverterFactory())
                 .addConverterFactory(GsonConverterFactory.create())
     }
 
@@ -27,6 +29,7 @@ internal class RetrofitConfig private constructor() {
                     instance
                             ?: RetrofitConfig().apply { instance = this }
                 }
+        fun newInstance() = RetrofitConfig()
     }
 
     internal fun addCallAdapterFactory(factory: CallAdapter.Factory): RetrofitConfig {

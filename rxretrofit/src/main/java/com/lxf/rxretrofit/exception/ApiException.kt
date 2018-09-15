@@ -1,6 +1,7 @@
 package com.lxf.rxretrofit.exception
 
 import android.net.ParseException
+import android.os.NetworkOnMainThreadException
 import com.google.gson.JsonParseException
 import com.google.gson.JsonSerializer
 import org.apache.http.conn.ConnectTimeoutException
@@ -113,9 +114,13 @@ class ApiException private constructor(throwable: Throwable, val code: Int) : Ex
                 ex = ApiException(e, ERROR.NULLPOINTER_EXCEPTION)
                 ex.errorInfo = "NullPointerException"
                 return ex
+            } else if (e is NetworkOnMainThreadException) {
+                ex = ApiException(e, ERROR.NULLPOINTER_EXCEPTION)
+                ex.errorInfo = "不能在主线程请求网络"
+                return ex
             } else {
                 ex = ApiException(e, ERROR.UNKNOWN)
-                ex.errorInfo = "未知错误"
+                ex.errorInfo = "未知错误：${e.message}"
                 return ex
             }
         }

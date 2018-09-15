@@ -29,7 +29,7 @@ class DownloadResponseBody(
                 progressListener?.invoke(
                         bytesReaded,
                         originalResponseBody.contentLength(),
-                        Math.round(bytesReaded / (originalResponseBody.contentLength().toDouble()) * 100).toInt(),
+                        Math.floor(bytesReaded / (originalResponseBody.contentLength().toDouble()) * 100).toInt(),
                         bytesRead == -1L
                 )
                 return bytesRead

@@ -12,6 +12,8 @@ import javax.net.ssl.HostnameVerifier
 
 
 class RetrofitHelper private constructor(){
+    private var retrofitConfig:RetrofitConfig = RetrofitConfig.newInstance()
+    private var okHttpConfig:OkHttpConfig = OkHttpConfig.newInstance()
 
     companion object {
         @Volatile
@@ -21,13 +23,14 @@ class RetrofitHelper private constructor(){
                 instance ?: synchronized(this) {
                     instance ?: RetrofitHelper().apply { instance = this }
                 }
+        fun newInstance() = RetrofitHelper()
     }
 
     /**
      * 是否开启日志
      */
     fun debug(debug: Boolean,level: HttpLoggingInterceptor.Level = HttpLoggingInterceptor.Level.BODY): RetrofitHelper {
-        OkHttpConfig.getInstance().debug(debug,level)
+        okHttpConfig.debug(debug,level)
         return this
     }
 
@@ -35,7 +38,7 @@ class RetrofitHelper private constructor(){
      * 全局读取超时时间
      */
     fun readTimeOut(readTimeOut: Long): RetrofitHelper {
-        OkHttpConfig.getInstance().readTimeOut(readTimeOut)
+        okHttpConfig.readTimeOut(readTimeOut)
         return this
     }
 
@@ -43,7 +46,7 @@ class RetrofitHelper private constructor(){
      * 全局写入超时时间
      */
     fun writeTimeOut(writeTimeout: Long): RetrofitHelper {
-        OkHttpConfig.getInstance().writeTimeOut(writeTimeout)
+        okHttpConfig.writeTimeOut(writeTimeout)
         return this
     }
 
@@ -51,7 +54,7 @@ class RetrofitHelper private constructor(){
      * 全局连接超时时间
      */
     fun connectTimeout(connectTimeout: Long): RetrofitHelper {
-        OkHttpConfig.getInstance().connectTimeout(connectTimeout)
+        okHttpConfig.connectTimeout(connectTimeout)
         return this
     }
 
@@ -59,7 +62,7 @@ class RetrofitHelper private constructor(){
      * 添加全局拦截器
      */
     fun addInterceptor(interceptor: Interceptor): RetrofitHelper {
-        OkHttpConfig.getInstance().addInterceptor(interceptor)
+        okHttpConfig.addInterceptor(interceptor)
         return this
     }
 
@@ -67,7 +70,7 @@ class RetrofitHelper private constructor(){
      * 添加全局网络拦截器
      */
     fun addNetworkInterceptor(interceptor: Interceptor): RetrofitHelper {
-        OkHttpConfig.getInstance().addNetworkInterceptor(interceptor)
+        okHttpConfig.addNetworkInterceptor(interceptor)
         return this
     }
 
@@ -75,7 +78,7 @@ class RetrofitHelper private constructor(){
      * https的全局访问规则
      */
     fun hostnameVerifier(hostnameVerifier: HostnameVerifier): RetrofitHelper {
-        OkHttpConfig.getInstance().hostnameVerifier(hostnameVerifier)
+        okHttpConfig.hostnameVerifier(hostnameVerifier)
         return this
     }
 
@@ -83,17 +86,17 @@ class RetrofitHelper private constructor(){
      * https双向认证证书
      */
     fun certificates(bksFile: InputStream? = null, password: String? = null, vararg certificates: InputStream): RetrofitHelper {
-        OkHttpConfig.getInstance().sslSocketFactory(bksFile, password, *certificates)
+        okHttpConfig.sslSocketFactory(bksFile, password, *certificates)
         return this
     }
 
     fun addCallAdapterFactory(factory: CallAdapter.Factory): RetrofitHelper{
-        RetrofitConfig.getInstance().addCallAdapterFactory(factory)
+        retrofitConfig.addCallAdapterFactory(factory)
         return this
     }
 
     fun addConverterFactory(factory: Converter.Factory): RetrofitHelper{
-        RetrofitConfig.getInstance().addConverterFactory(factory)
+        retrofitConfig.addConverterFactory(factory)
         return this
     }
 
@@ -101,7 +104,7 @@ class RetrofitHelper private constructor(){
      * 设置自定义OkHttpClient
      */
     fun client(client: OkHttpClient):RetrofitHelper{
-        RetrofitConfig.getInstance().client(client)
+        retrofitConfig.client(client)
         return this
     }
 
@@ -109,15 +112,15 @@ class RetrofitHelper private constructor(){
      * 全局基础URL
      */
     fun baseUrl(url:String):RetrofitHelper{
-        RetrofitConfig.getInstance().baseUrl(url)
+        retrofitConfig.baseUrl(url)
         return this
     }
 
     fun <T> create(service:Class<T>): T {
-        if (!RetrofitConfig.getInstance().isCustomClient){
-            val client = OkHttpConfig.getInstance().build()
+        if (!retrofitConfig.isCustomClient){
+            val client = okHttpConfig.build()
             client(client)
         }
-        return RetrofitConfig.getInstance().build().create(service)
+        return retrofitConfig.build().create(service)
     }
 }

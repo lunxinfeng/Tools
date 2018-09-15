@@ -1,5 +1,6 @@
 package com.lxf.tools.util
 
+import android.os.Environment
 import okio.BufferedSource
 import okio.Okio
 import java.io.File
@@ -23,3 +24,5 @@ fun writeFile(source: BufferedSource, file: File) {
     bufferedSink.close()
     source.close()
 }
+
+fun getSDPath() = Environment.getExternalStorageDirectory().absolutePath
