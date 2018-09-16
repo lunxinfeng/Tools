@@ -108,9 +108,10 @@ class RetrofitActivity : BaseActivity() {
     private fun download(){
         RetrofitHelper.newInstance()
                 .debug(true)
-                .download(
-                        "http://www.izis.cn/GoWebService/yztv_10.apk",
-                        getSDPath() + File.separator + "yztv.apk",
+                .download<BaseView>(
+                        tag = "download",
+                        url = "http://www.izis.cn/GoWebService/yztv_10.apk",
+                        filePath = getSDPath() + File.separator + "yztv.apk",
                         progressListener = {_, _, progress, done ->
                             Log.d(TAG,"download：$progress\t$done")
                             progressBar.progress = progress
@@ -124,5 +125,12 @@ class RetrofitActivity : BaseActivity() {
                             toast(it)
                         }
                 )
+    }
+
+    override fun onBackPressed() {
+        if (RetrofitHelper.hasTask("download"))
+            RetrofitHelper.cancel("download")
+        else
+            super.onBackPressed()
     }
 }

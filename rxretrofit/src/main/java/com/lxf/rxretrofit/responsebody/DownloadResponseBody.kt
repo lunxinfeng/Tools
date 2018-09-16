@@ -1,4 +1,4 @@
-package com.lxf.rxretrofit.download
+package com.lxf.rxretrofit.responsebody
 
 import com.lxf.rxretrofit.callback.ProgressListener
 import okhttp3.ResponseBody

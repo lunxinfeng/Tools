@@ -2,6 +2,7 @@ package com.lxf.rxretrofit
 
 import com.lxf.rxretrofit.config.OkHttpConfig
 import com.lxf.rxretrofit.config.RetrofitConfig
+import com.lxf.rxretrofit.manager.TaskManager
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -19,11 +20,37 @@ class RetrofitHelper private constructor(){
         @Volatile
         private var instance: RetrofitHelper? = null
 
+        /**
+         * 用于常规网络请求
+         */
         fun getInstance() =
                 instance ?: synchronized(this) {
                     instance ?: RetrofitHelper().apply { instance = this }
                 }
+
+        /**
+         * 用于文件的上传、下载
+         */
         fun newInstance() = RetrofitHelper()
+
+        /**
+         * 判断任务栈中有没有该任务
+         */
+        fun hasTask(tag: String) = TaskManager.hasTask(tag)
+
+        /**
+         * 根据tag取消任务
+         */
+        fun cancel(tag: String){
+            TaskManager.cancel(tag)
+        }
+
+        /**
+         * 取消所有任务
+         */
+        fun cancelAll(){
+            TaskManager.cancelAll()
+        }
     }
 
     /**

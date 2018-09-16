@@ -4,19 +4,19 @@ import io.reactivex.disposables.Disposable
 
 
 abstract class ProgressObserver<T,V : BaseView>(
-        private val view:V? = null,
-        private val showProgress:Boolean = true
-):BaseObserver<T>() {
+        tag: String? = null,
+        private val view:V? = null
+):BaseObserver<T>(tag) {
     override fun doOnSubscribe(d: Disposable) {
-        view?.showProgress(showProgress)
+        view?.showProgress()
     }
 
     override fun doOnComplete() {
-        view?.showProgress(false)
+        view?.hideProgress()
     }
 
     override fun doOnError(e: Throwable,errorMessage: String) {
-        view?.showProgress(false)
+        view?.hideProgress()
         doOnError(errorMessage)
     }
 

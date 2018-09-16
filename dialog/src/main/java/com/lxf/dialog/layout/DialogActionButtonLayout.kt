@@ -1,6 +1,7 @@
 package com.lxf.dialog.layout
 
 import android.content.Context
+import android.support.v7.widget.AppCompatCheckBox
 import android.util.AttributeSet
 import android.view.ViewGroup
 import com.lxf.dialog.*
@@ -27,6 +28,8 @@ internal class DialogActionButtonLayout(
     private val buttonFramePadding = dimenPx(R.dimen.md_action_button_frame_padding)
     private val buttonFramePaddingNeutral = dimenPx(R.dimen.md_action_button_frame_padding_neutral)
     private val buttonSpacing = dimenPx(R.dimen.md_action_button_spacing)
+    private val checkBoxPromptMarginVertical = dimenPx(R.dimen.md_checkbox_prompt_margin_vertical)
+    private val checkBoxPromptMarginHorizontal = dimenPx(R.dimen.md_checkbox_prompt_margin_horizontal)
 
     /**
      * 是否堆叠按钮
@@ -36,6 +39,7 @@ internal class DialogActionButtonLayout(
      * 底部的操作按钮
      */
     lateinit var actionButtons: Array<DialogActionButton>
+    lateinit var checkBoxPrompt: AppCompatCheckBox
     /**
      * 三个操作按钮中可见的按钮集合
      */
@@ -45,7 +49,7 @@ internal class DialogActionButtonLayout(
      * 是否所有元素不可见
      */
     val isAllElementGone:Boolean
-        get() = visibleButtons.isEmpty()
+        get() = visibleButtons.isEmpty() && !checkBoxPrompt.isVisible()
 
     override fun onFinishInflate() {
         super.onFinishInflate()
@@ -54,6 +58,8 @@ internal class DialogActionButtonLayout(
                 findViewById(R.id.md_button_negative),
                 findViewById(R.id.md_button_neutral)
         )
+
+        checkBoxPrompt = findViewById(R.id.md_checkbox_prompt)
 
         for ((i,btn) in actionButtons.withIndex()){
             val which = WhichButton.get(i)
@@ -68,6 +74,14 @@ internal class DialogActionButtonLayout(
         }
 
         val parentWidth = MeasureSpec.getSize(widthMeasureSpec)
+
+        if (checkBoxPrompt.isVisible()) {
+            val checkboxPromptMaxWidth = parentWidth - (checkBoxPromptMarginHorizontal * 2)
+            checkBoxPrompt.measure(
+                    MeasureSpec.makeMeasureSpec(checkboxPromptMaxWidth, MeasureSpec.AT_MOST),
+                    MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
+            )
+        }
 
         //----测量子view----
         for (button in visibleButtons){
@@ -94,10 +108,10 @@ internal class DialogActionButtonLayout(
             }
         }
 
-        val totalHeight =  when {
-            visibleButtons.isEmpty() -> 0
-            stackButtons -> (visibleButtons.size * buttonHeightStacked) + buttonFramePadding
-            else -> buttonHeightDefault + (buttonFramePadding * 2)
+        var totalHeight = requiredHeightForButtons()
+
+        if (checkBoxPrompt.isVisible()) {
+            totalHeight += checkBoxPrompt.measuredHeight + (checkBoxPromptMarginVertical * 2)
         }
 
         setMeasuredDimension(parentWidth, totalHeight)
@@ -105,6 +119,25 @@ internal class DialogActionButtonLayout(
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         if (isAllElementGone) return
+
+        if (checkBoxPrompt.isVisible()) {
+            val promptLeft: Int
+            val promptTop: Int
+            val promptRight: Int
+            val promptBottom: Int
+
+            promptLeft = checkBoxPromptMarginHorizontal
+            promptTop = checkBoxPromptMarginVertical
+            promptRight = promptLeft + checkBoxPrompt.measuredWidth
+            promptBottom = promptTop + checkBoxPrompt.measuredHeight
+
+            checkBoxPrompt.layout(
+                    promptLeft,
+                    promptTop,
+                    promptRight,
+                    promptBottom
+            )
+        }
 
         if (stackButtons) {
             var topY = 0
@@ -114,7 +147,7 @@ internal class DialogActionButtonLayout(
                 topY = bottomY
             }
         }else {
-            val topY = buttonFramePadding
+            val topY = measuredHeight - (requiredHeightForButtons() - buttonFramePadding)
             val bottomY = measuredHeight - buttonFramePadding
 
             if (actionButtons[INDEX_NEUTRAL].isVisible()) {
@@ -138,4 +171,9 @@ internal class DialogActionButtonLayout(
         }
     }
 
+    private fun requiredHeightForButtons() = when {
+        visibleButtons.isEmpty() -> 0
+        stackButtons -> (visibleButtons.size * buttonHeightStacked) + buttonFramePadding
+        else -> buttonHeightDefault + (buttonFramePadding * 2)
+    }
 }

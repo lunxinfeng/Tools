@@ -119,13 +119,14 @@ class MaterialDialog(context: Context) : Dialog(context) {
             @StringRes res: Int? = null,
             text: CharSequence? = null,
             fontConfig:FontConfig? = null,
+            enabled:Boolean = false,
             click: DialogCallback? = null
     ): MaterialDialog {
         if (click != null) {
             positiveListeners.add(click)
         }
 
-        val btn = getActionButton(WhichButton.POSITIVE)
+        val btn = getActionButton(WhichButton.POSITIVE).apply { isEnabled = enabled }
         if (res == null && text == null && btn.isVisible()) {
             // Didn't receive text and the button is already setup,
             // so just stop with the added listener.
@@ -145,13 +146,14 @@ class MaterialDialog(context: Context) : Dialog(context) {
             @StringRes res: Int? = null,
             text: CharSequence? = null,
             fontConfig:FontConfig? = null,
+            enabled:Boolean = true,
             click: DialogCallback? = null
     ): MaterialDialog {
         if (click != null) {
             negativeListeners.add(click)
         }
 
-        val btn = getActionButton(WhichButton.NEGATIVE)
+        val btn = getActionButton(WhichButton.NEGATIVE).apply { isEnabled = enabled }
         if (res == null && text == null && btn.isVisible()) {
             // Didn't receive text and the button is already setup,
             // so just stop with the added listener.

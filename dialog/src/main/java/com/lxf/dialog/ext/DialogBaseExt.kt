@@ -106,7 +106,7 @@ internal fun MaterialDialog.addContentMessageView(
 
 internal fun MaterialDialog.hasActionButtons() = view.buttonsLayout.visibleButtons.isNotEmpty()
 
-internal fun MaterialDialog.getActionButton(which: WhichButton) =
+fun MaterialDialog.getActionButton(which: WhichButton) =
         view.buttonsLayout.actionButtons[which.index] as AppCompatButton
 
 internal fun MaterialDialog.onActionButtonClicked(which: WhichButton) {

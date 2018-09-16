@@ -6,11 +6,9 @@ import android.os.Bundle
 import android.view.animation.BounceInterpolator
 import com.lxf.dialog.FontConfig
 import com.lxf.dialog.MaterialDialog
+import com.lxf.dialog.WhichButton
 import com.lxf.dialog.anim.*
-import com.lxf.dialog.ext.input
-import com.lxf.dialog.ext.listItems
-import com.lxf.dialog.ext.listItemsMultiChoice
-import com.lxf.dialog.ext.listItemsSingleChoice
+import com.lxf.dialog.ext.*
 import com.lxf.tools.R
 import com.lxf.tools.util.toast
 import kotlinx.android.synthetic.main.activity_dialog.*
@@ -23,6 +21,7 @@ class DialogActivity : AppCompatActivity() {
 
         btnBaseDialog.setOnClickListener { baseDialog() }
         btnAnimDialog.setOnClickListener { animDialog() }
+        btnCheckBox.setOnClickListener { checkBoxDialog() }
         btnListBase.setOnClickListener { listDialog() }
         btnSingleChoice.setOnClickListener { singleChoiceDialog() }
         btnMultiChoice.setOnClickListener { multiChoiceDialog() }
@@ -33,7 +32,7 @@ class DialogActivity : AppCompatActivity() {
         MaterialDialog(this)
                 .title(text = "BaseDialog")
                 .message(text = "I am a BaseDialog!")
-                .positiveButton(text = "确定")
+                .positiveButton(text = "确定",enabled = true)
                 .negativeButton(text = "取消")
                 .show()
     }
@@ -50,6 +49,20 @@ class DialogActivity : AppCompatActivity() {
                 .animOnDismiss(RotateBottomOut())
 //                .animOnShow(SlideTopIn())
 //                .animOnDismiss(SlideBottomOut())
+                .show()
+    }
+
+    private fun checkBoxDialog(){
+        MaterialDialog(this)
+                .title(text = "免责声明")
+                .message(textRes = R.string.des)
+                .checkBoxPrompt(
+                        text = "我同意"
+                ){materialDialog, checked ->
+                    materialDialog.getActionButton(WhichButton.POSITIVE).isEnabled = checked
+                }
+                .positiveButton(text = "确定")
+                .negativeButton(text = "取消")
                 .show()
     }
 

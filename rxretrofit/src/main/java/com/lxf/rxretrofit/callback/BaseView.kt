@@ -2,5 +2,6 @@ package com.lxf.rxretrofit.callback
 
 
 interface BaseView {
-    fun showProgress(show:Boolean)
+    fun showProgress()
+    fun hideProgress()
 }

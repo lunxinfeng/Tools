@@ -10,20 +10,25 @@ import com.lxf.rxretrofit.transformer.Transformer
 typealias ErrorListener = (String) -> Unit
 typealias CompleteListener = () -> Unit
 
-fun RetrofitHelper.download(
+fun <V:BaseView> RetrofitHelper.download(
         url:String,
         filePath:String,
+        tag:String? = null,
+        view: V? = null,
         progressListener:ProgressListener? = null,
         completeListener:CompleteListener? = null,
         errorListener: ErrorListener? = null
 ){
-    this
-            .addInterceptor(DownloadInterceptor(progressListener))
+    this.addInterceptor(DownloadInterceptor(progressListener))
             .baseUrl("https://www.baidu.com")
             .create(ApiService::class.java)
             .downloadFile(url)
             .compose(Transformer.io_main())
-            .subscribe(object : DownloadObserver<BaseView>(filePath = filePath){
+            .subscribe(object : DownloadObserver<V>(
+                    filePath = filePath,
+                    tag = tag,
+                    view = view
+            ){
                 override fun doOnComplete() {
                     super.doOnComplete()
                     completeListener?.invoke()
@@ -33,3 +38,13 @@ fun RetrofitHelper.download(
                 }
             })
 }
+
+//fun RetrofitHelper.upload(
+//        url:String,
+//        paramsMap:Map<String,Any>,
+//        filePaths:List<String>
+//){
+//    this.baseUrl("https://www.baidu.com")
+//            .create(ApiService::class.java)
+//            .uploadFiles(url)
+//}

@@ -1,7 +1,7 @@
 package com.lxf.rxretrofit.interceptor
 
 import com.lxf.rxretrofit.callback.ProgressListener
-import com.lxf.rxretrofit.download.DownloadResponseBody
+import com.lxf.rxretrofit.responsebody.DownloadResponseBody
 import okhttp3.Interceptor
 import okhttp3.Response
 
