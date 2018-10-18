@@ -38,8 +38,10 @@
         <activity
             android:name=".ui.DialogActivity"
             android:launchMode="singleTask" />
-        <activity android:name=".ui.RetrofitActivity"
+        <activity
+            android:name=".ui.RetrofitActivity"
             android:launchMode="singleTask" />
+        <activity android:name=".ui.SlideViewActivity"></activity>
     </application>
 
 </manifest>

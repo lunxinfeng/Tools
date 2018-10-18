@@ -27,6 +27,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation rootProject.ext.dependencies.appcompatV7
     implementation rootProject.ext.dependencies.constraint_layout
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     testImplementation rootProject.ext.dependencies.test_junit
     androidTestImplementation rootProject.ext.dependencies.test_runner
     androidTestImplementation rootProject.ext.dependencies.test_espresso
