@@ -24,10 +24,10 @@ class RecyclerActivity : BaseActivity() {
             }
             attachToItemTouchHelper(ItemTouchHelperCallback(
                     onMove = { viewHolder,target ->
-//                        adapter.onMove(viewHolder.adapterPosition,target.adapterPosition)
+                        adapter.onMove(viewHolder.adapterPosition,target.adapterPosition)
                     },
                     onSwipe = { viewHolder,direction ->
-//                        adapter.onSwipe(viewHolder.adapterPosition,direction)
+                        adapter.onSwipe(viewHolder.adapterPosition,direction)
                     }
             ))
         }

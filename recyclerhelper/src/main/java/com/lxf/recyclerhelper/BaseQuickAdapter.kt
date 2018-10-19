@@ -129,9 +129,9 @@ abstract class BaseQuickAdapter<T, VH : BaseViewHolder>(
         } else super.getItemViewType(position)
     }
 
-    override fun onViewAttachedToWindow(holder: VH?) {
+    override fun onViewAttachedToWindow(holder: VH) {
         super.onViewAttachedToWindow(holder)
-        val viewType = holder!!.itemViewType
+        val viewType = holder.itemViewType
         if (viewType != EMPTY_VIEW && viewType != ERROR_VIEW)
             addAnimation(holder)
 
