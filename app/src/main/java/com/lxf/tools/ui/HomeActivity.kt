@@ -19,13 +19,13 @@ class HomeActivity : BaseActivity() {
             adapter = this@HomeActivity.adapter
         }
 
-        adapter.setNewData(listOf(
+        adapter.setNewData(mutableListOf(
                 "RecyclerAdapterHelper",
                 "Dialog",
                 "Retrofit",
                 "SlideView"
         ))
-        adapter.setOnItemClickListener { _, _, position ->
+        adapter.onItemClickListener = { _, _, position ->
             when(position){
                 0 -> startActivity(Intent(this@HomeActivity,RecyclerActivity::class.java))
                 1 -> startActivity(Intent(this@HomeActivity,DialogActivity::class.java))
@@ -35,10 +35,10 @@ class HomeActivity : BaseActivity() {
         }
     }
 
-    inner class Adapter(layoutId:Int,data:List<String>? = null)
+    inner class Adapter(layoutId:Int,data:MutableList<String>? = null)
         : BaseQuickAdapter<String, BaseViewHolder>(layoutId,data) {
-        override fun convert(holder: BaseViewHolder?, item: String?) {
-            holder!!.setText(R.id.tv_content,item)
+        override fun convert(holder: BaseViewHolder, item: String) {
+            holder.setText(R.id.tv_content,item)
         }
     }
 }
