@@ -40,11 +40,8 @@ class MenuCardView(
         menu = getChildAt(0)
     }
 
-    override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
-        return if (content.x == 0f)
-            true
-        else
-            viewDragHelper.shouldInterceptTouchEvent(ev)
+    override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
+        return viewDragHelper.shouldInterceptTouchEvent(ev)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -62,12 +59,14 @@ class MenuCardView(
 
 
     inner class DragCallback : ViewDragHelper.Callback() {
+
         private var left = 0
-        override fun tryCaptureView(child: View?, pointerId: Int): Boolean {
+
+        override fun tryCaptureView(child: View, pointerId: Int): Boolean {
             return child == content
         }
 
-        override fun clampViewPositionHorizontal(child: View?, left: Int, dx: Int): Int {
+        override fun clampViewPositionHorizontal(child: View, left: Int, dx: Int): Int {
             //child 表示当前正在移动的view
             //left 表示当前的view正要移动到左边距为left的地方
             //dx 表示和上一次滑动的距离间隔
@@ -89,6 +88,10 @@ class MenuCardView(
                 viewDragHelper.settleCapturedViewAt(0, 0)
 
             postInvalidate()
+        }
+
+        override fun getViewHorizontalDragRange(child: View): Int {
+            return menu.width
         }
     }
 }
