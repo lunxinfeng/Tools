@@ -23,7 +23,8 @@ class HomeActivity : BaseActivity() {
                 "RecyclerAdapterHelper",
                 "Dialog",
                 "Retrofit",
-                "SlideView"
+                "SlideView",
+                "GameMenu"
         ))
         adapter.onItemClickListener = { _, _, position ->
             when(position){
@@ -31,6 +32,7 @@ class HomeActivity : BaseActivity() {
                 1 -> startActivity(Intent(this@HomeActivity,DialogActivity::class.java))
                 2 -> startActivity(Intent(this@HomeActivity,RetrofitActivity::class.java))
                 3 -> startActivity(Intent(this@HomeActivity,SlideViewActivity::class.java))
+                4 -> startActivity(Intent(this@HomeActivity,GameMenuActivity::class.java))
             }
         }
     }

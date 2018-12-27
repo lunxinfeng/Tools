@@ -41,7 +41,8 @@
         <activity
             android:name=".ui.RetrofitActivity"
             android:launchMode="singleTask" />
-        <activity android:name=".ui.SlideViewActivity"></activity>
+        <activity android:name=".ui.SlideViewActivity" />
+        <activity android:name=".ui.GameMenuActivity" android:screenOrientation="landscape"/>
     </application>
 
 </manifest>
