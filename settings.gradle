@@ -1,1 +1,1 @@
-include ':app', ':recyclerhelper', ':dialog', ':rxretrofit', ':rxpermissions', ':rx_retrofit'
+include ':app', ':recyclerhelper', ':dialog', ':rxpermissions', ':rx_retrofit'

@@ -18,6 +18,7 @@ import com.lxf.tools.util.io_main_izis
 import com.lxf.tools.util.toast
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_retrofit.*
+import okhttp3.ResponseBody
 import java.io.File
 import java.util.HashMap
 
@@ -33,6 +34,7 @@ class RetrofitActivity : BaseActivity() {
         btnObject.setOnClickListener { getVersion() }
         btnMap.setOnClickListener { map() }
         btnDownload.setOnClickListener { permission() }
+        btnPost.setOnClickListener { post() }
     }
 
     private fun init(){
@@ -127,6 +129,23 @@ class RetrofitActivity : BaseActivity() {
                             toast(it)
                         }
                 )
+    }
+
+    private fun post(){
+        RetrofitHelper.getInstance()
+                .baseUrl("http://apitest.yqlwq.cn")
+                .create(ApiService::class.java)
+                .login("13397610333", "123456")
+                .subscribeOn(Schedulers.io())
+                .subscribe(object : ProgressObserver<ResponseBody,BaseView>(){
+                    override fun doOnError(errorMessage: String) {
+                        Log.d(TAG, errorMessage)
+                    }
+
+                    override fun doOnNext(data: ResponseBody) {
+                        Log.d(TAG, data.toString())
+                    }
+                })
     }
 
     override fun onBackPressed() {
