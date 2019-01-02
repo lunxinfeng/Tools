@@ -16,6 +16,7 @@ import com.lxf.tools.net_hint.BaseActivity
 import com.lxf.tools.util.getSDPath
 import com.lxf.tools.util.io_main_izis
 import com.lxf.tools.util.toast
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_retrofit.*
 import java.io.File
 import java.util.HashMap
@@ -79,7 +80,8 @@ class RetrofitActivity : BaseActivity() {
                             this["app_version"] = "2"
                         }
                 ))
-                .compose(Transformer.io_main<ResultEntity<Map<String, String>>>())
+//                .compose(Transformer.io_main<ResultEntity<Map<String, String>>>())
+                .subscribeOn(Schedulers.io())
                 .subscribe(object : ProgressObserver<ResultEntity<Map<String, String>>, BaseView>() {
                     override fun doOnError(e: Throwable, errorMessage: String) {
                         super.doOnError(e, errorMessage)

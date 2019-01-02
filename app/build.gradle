@@ -38,7 +38,7 @@ dependencies {
     implementation rootProject.ext.dependencies.retrofit_gson_converter
     implementation rootProject.ext.dependencies.okhttp_logging
     implementation project(':recyclerhelper')
-    implementation project(':rxretrofit')
+    implementation project(':rx_retrofit')
     implementation project(':dialog')
     implementation project(':rxpermissions')
 }
