@@ -11,12 +11,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 internal class RetrofitConfig private constructor() {
     internal var isCustomClient = false
+    private var isCustomRetrofitConverter = false
+    private var isCustomRetrofitAdapter = false
 
     init {
         retrofitBuilder = Retrofit.Builder()
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(NullOnEmptyConverterFactory())
-                .addConverterFactory(GsonConverterFactory.create())
     }
 
     companion object {
@@ -29,16 +28,19 @@ internal class RetrofitConfig private constructor() {
                     instance
                             ?: RetrofitConfig().apply { instance = this }
                 }
+
         fun newInstance() = RetrofitConfig()
     }
 
     internal fun addCallAdapterFactory(factory: CallAdapter.Factory): RetrofitConfig {
         retrofitBuilder.addCallAdapterFactory(factory)
+        isCustomRetrofitAdapter = true
         return this
     }
 
     internal fun addConverterFactory(factory: Converter.Factory): RetrofitConfig {
         retrofitBuilder.addConverterFactory(factory)
+        isCustomRetrofitConverter = true
         return this
     }
 
@@ -53,7 +55,19 @@ internal class RetrofitConfig private constructor() {
         return this
     }
 
-    internal fun build() = retrofitBuilder.build()
+    internal fun build(): Retrofit {
+        if (!isCustomRetrofitAdapter) {
+            retrofitBuilder
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+        }
+
+        if (!isCustomRetrofitConverter) {
+            retrofitBuilder
+                    .addConverterFactory(NullOnEmptyConverterFactory())
+                    .addConverterFactory(GsonConverterFactory.create())
+        }
+        return retrofitBuilder.build()
+    }
 
     internal fun <T> create(service: Class<T>) = build().create(service)
 }
