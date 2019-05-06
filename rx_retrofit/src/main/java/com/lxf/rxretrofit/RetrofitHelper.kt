@@ -23,6 +23,7 @@ class RetrofitHelper private constructor(){
         /**
          * 用于常规网络请求
          */
+        @JvmStatic
         fun getInstance() =
                 instance ?: synchronized(this) {
                     instance ?: RetrofitHelper().apply { instance = this }

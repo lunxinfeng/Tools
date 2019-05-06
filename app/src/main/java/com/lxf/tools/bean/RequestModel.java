@@ -9,7 +9,7 @@ public class RequestModel {
 	private String info;	//请求内容主题
 	private String snum;	//序列号或动态口令
 	private int userid;	//请求中ID
-	
+
 	public RequestModel() {
 
 	}

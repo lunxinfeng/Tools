@@ -19,6 +19,7 @@ import com.lxf.tools.util.toast
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_retrofit.*
 import okhttp3.ResponseBody
+import retrofit2.Response
 import java.io.File
 import java.util.HashMap
 
@@ -135,14 +136,18 @@ class RetrofitActivity : BaseActivity() {
         RetrofitHelper.getInstance()
                 .baseUrl("http://apitest.yqlwq.cn")
                 .create(ApiService::class.java)
-                .login("13397610333", "123456")
+                .login(HashMap<String,String>().apply {
+                    this["phone"] = "15116480723"
+                    this["password"] = "123456"
+                })
+//                .login("15116480723", "123456")
                 .subscribeOn(Schedulers.io())
-                .subscribe(object : ProgressObserver<ResponseBody,BaseView>(){
+                .subscribe(object : ProgressObserver<Response<ResponseBody>,BaseView>(){
                     override fun doOnError(errorMessage: String) {
                         Log.d(TAG, errorMessage)
                     }
 
-                    override fun doOnNext(data: ResponseBody) {
+                    override fun doOnNext(data: Response<ResponseBody>) {
                         Log.d(TAG, data.toString())
                     }
                 })

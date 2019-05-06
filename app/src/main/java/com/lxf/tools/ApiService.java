@@ -9,6 +9,7 @@ import java.util.Map;
 
 import io.reactivex.Observable;
 import okhttp3.ResponseBody;
+import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
@@ -28,5 +29,6 @@ public interface ApiService {
 
 
     @POST("api/game/user/login")
-    Observable<ResponseBody> login(@Query("phone") String phone, @Query("password") String password);
+//    Observable<ResponseBody> login(@Query("phone") String phone, @Query("password") String password);
+    Observable<Response<ResponseBody>> login(@Body Map<String,String> params);
 }
