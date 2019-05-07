@@ -34,7 +34,7 @@ dependencies {
 //    androidTestImplementation rootProject.ext.dependencies.test_runner
 //    androidTestImplementation rootProject.ext.dependencies.test_espresso
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation rootProject.ext.dependencies.rxJava
+    compileOnly rootProject.ext.dependencies.rxJava
 }
 repositories {
     mavenCentral()

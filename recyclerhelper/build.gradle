@@ -31,12 +31,12 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation rootProject.ext.dependencies.appcompatV7
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation rootProject.ext.dependencies.test_runner
-    androidTestImplementation rootProject.ext.dependencies.test_espresso
+    compileOnly rootProject.ext.dependencies.appcompatV7
+//    testImplementation 'junit:junit:4.12'
+//    androidTestImplementation rootProject.ext.dependencies.test_runner
+//    androidTestImplementation rootProject.ext.dependencies.test_espresso
     compileOnly 'com.android.support:recyclerview-v7:26.1.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 repositories {
     mavenCentral()
