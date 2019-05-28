@@ -20,6 +20,7 @@ typealias OnItemClickListener = (adapter: BaseQuickAdapter<*, *>, view: View, po
 typealias OnItemChildClickListener = (adapter: BaseQuickAdapter<*, *>, view: View, position: Int) -> Unit
 typealias OnItemLongClickListener = (adapter: BaseQuickAdapter<*, *>, view: View, position: Int) -> Boolean
 typealias OnItemChildLongClickListener = (adapter: BaseQuickAdapter<*, *>, view: View, position: Int) -> Boolean
+typealias OnLoadMoreListener = () -> Unit
 
 abstract class BaseQuickAdapter<T, VH : BaseViewHolder>(
         @LayoutRes private val layoutId: Int,
@@ -67,10 +68,14 @@ abstract class BaseQuickAdapter<T, VH : BaseViewHolder>(
      */
     private var loadError: Boolean = false
 
+    private var preLoadNumber = 1
+    private var isLoadingMore = false
+
     var onItemClickListener: OnItemClickListener? = null
     var onItemChildClickListener: OnItemChildClickListener? = null
     var onItemLongClickListener: OnItemLongClickListener? = null
     var onItemChildLongClickListener: OnItemChildLongClickListener? = null
+    var onLoadMoreListener: OnLoadMoreListener? = null
 
     val headerLayoutCount: Int
         get() = 0
@@ -103,6 +108,9 @@ abstract class BaseQuickAdapter<T, VH : BaseViewHolder>(
     }
 
     override fun onBindViewHolder(holder: VH, position: Int) {
+        if (onLoadMoreListener != null)
+            autoLoadMore(position)
+
         val viewType = holder.itemViewType
         when (viewType) {
             HEADER_VIEW -> {
@@ -139,6 +147,22 @@ abstract class BaseQuickAdapter<T, VH : BaseViewHolder>(
     }
 
     protected abstract fun convert(holder: VH, item: T)
+
+    private fun autoLoadMore(position: Int) {
+        if (position < itemCount - preLoadNumber) {
+            return
+        }
+        if (!isLoadingMore) {
+            isLoadingMore = true
+            onLoadMoreListener?.invoke()
+        }
+    }
+
+    fun loadMoreComplete() {
+        onLoadMoreListener?:return
+        isLoadingMore = false
+        notifyItemChanged(itemCount)
+    }
 
     fun setNewData(data: MutableList<T>?) {
         this.data = data ?: mutableListOf()
