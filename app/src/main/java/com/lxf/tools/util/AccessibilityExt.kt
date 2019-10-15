@@ -3,6 +3,7 @@ package com.lxf.tools.util
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.GestureDescription
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Path
 import android.os.Build
@@ -80,4 +81,20 @@ fun AccessibilityService.gestureOnScreen(
     builder.addStroke(GestureDescription.StrokeDescription(path, startTime, duration))
     val gesture = builder.build()
     dispatchGesture(gesture, callback, handler)
+}
+
+/**
+ * 默认开启无障碍服务，无需用户手动授权，需要app在uid在系统进程，并声明权限
+ * <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+ * <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"/>
+ *
+ * @param name 无障碍服务的名字，比如"cn.izis.test/cn.izis.test.ClickAccessibilityService"
+ */
+fun startAccessibilityServiceAuto(context: ContextWrapper, name:String){
+    Settings.Secure.putString(
+            context.contentResolver,
+            Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES,
+            name
+    )
+    Settings.Secure.putInt(context.contentResolver, Settings.Secure.ACCESSIBILITY_ENABLED, 1)
 }
