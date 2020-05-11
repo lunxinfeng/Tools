@@ -2,6 +2,7 @@ package com.lxf.rxretrofit.config
 
 import com.lxf.rxretrofit.https.DefaultHostnameVerifier
 import com.lxf.rxretrofit.https.HttpsUtils
+import okhttp3.Dispatcher
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -10,18 +11,18 @@ import java.util.concurrent.TimeUnit
 import javax.net.ssl.HostnameVerifier
 
 
-internal class OkHttpConfig private constructor(){
+internal class OkHttpConfig private constructor() {
 
     init {
         okHttpClientBuilder = OkHttpClient.Builder()
                 .hostnameVerifier(DefaultHostnameVerifier())
-                .readTimeout(DEFAULT_MILLISECONDS,TimeUnit.MILLISECONDS)
-                .writeTimeout(DEFAULT_MILLISECONDS,TimeUnit.MILLISECONDS)
-                .connectTimeout(DEFAULT_MILLISECONDS,TimeUnit.MILLISECONDS)
+                .readTimeout(DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS)
+                .writeTimeout(DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS)
+                .connectTimeout(DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS)
     }
 
     companion object {
-        private const val DEFAULT_MILLISECONDS = 60 * 1000L
+        private const val DEFAULT_MILLISECONDS = 10 * 1000L
         @Volatile
         private var instance: OkHttpConfig? = null
         private lateinit var okHttpClientBuilder: OkHttpClient.Builder
@@ -31,13 +32,14 @@ internal class OkHttpConfig private constructor(){
                     instance
                             ?: OkHttpConfig().apply { instance = this }
                 }
+
         fun newInstance() = OkHttpConfig()
     }
 
     /**
      * 是否开启日志
      */
-    internal fun debug(debug: Boolean,level:HttpLoggingInterceptor.Level = HttpLoggingInterceptor.Level.BODY): OkHttpConfig {
+    internal fun debug(debug: Boolean, level: HttpLoggingInterceptor.Level = HttpLoggingInterceptor.Level.BODY): OkHttpConfig {
         if (debug) {
             val loggingInterceptor = HttpLoggingInterceptor()
             loggingInterceptor.level = level
@@ -49,7 +51,7 @@ internal class OkHttpConfig private constructor(){
     /**
      * 全局读取超时时间
      */
-    internal fun readTimeOut(readTimeOut: Long,timeUnit: TimeUnit = TimeUnit.MILLISECONDS): OkHttpConfig {
+    internal fun readTimeOut(readTimeOut: Long, timeUnit: TimeUnit = TimeUnit.MILLISECONDS): OkHttpConfig {
         okHttpClientBuilder.readTimeout(readTimeOut, timeUnit)
         return this
     }
@@ -57,7 +59,7 @@ internal class OkHttpConfig private constructor(){
     /**
      * 全局写入超时时间
      */
-    internal fun writeTimeOut(writeTimeout: Long,timeUnit: TimeUnit = TimeUnit.MILLISECONDS): OkHttpConfig {
+    internal fun writeTimeOut(writeTimeout: Long, timeUnit: TimeUnit = TimeUnit.MILLISECONDS): OkHttpConfig {
         okHttpClientBuilder.writeTimeout(writeTimeout, timeUnit)
         return this
     }
@@ -65,7 +67,7 @@ internal class OkHttpConfig private constructor(){
     /**
      * 全局连接超时时间
      */
-    internal fun connectTimeout(connectTimeout: Long,timeUnit: TimeUnit = TimeUnit.MILLISECONDS): OkHttpConfig {
+    internal fun connectTimeout(connectTimeout: Long, timeUnit: TimeUnit = TimeUnit.MILLISECONDS): OkHttpConfig {
         okHttpClientBuilder.connectTimeout(connectTimeout, timeUnit)
         return this
     }
@@ -83,6 +85,22 @@ internal class OkHttpConfig private constructor(){
      */
     internal fun addNetworkInterceptor(interceptor: Interceptor): OkHttpConfig {
         okHttpClientBuilder.addNetworkInterceptor(interceptor)
+        return this
+    }
+
+    /**
+     * 设置最大并发
+     */
+    internal fun dispatcher(dispatcher: Dispatcher): OkHttpConfig {
+        okHttpClientBuilder.dispatcher(dispatcher)
+        return this
+    }
+
+    /**
+     * 是否允许重连，默认true
+     */
+    internal fun retryOnConnectionFailure(retry: Boolean): OkHttpConfig {
+        okHttpClientBuilder.retryOnConnectionFailure(retry)
         return this
     }
 
